@@ -1,0 +1,31 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="single">
+
+<!-- Main -->
+<div id="main">
+
+<!-- Post -->
+	{% include './event_box.html' %} 
+	{% include './event_box.html' %} 
+
+
+
+<!-- Pagination -->
+ 	{% include '../../components/pagination.html' %} 
+<!-- table1 -->
+ 	{% include './event_table1.html' %} 
+<!-- Form -->
+ 	{% include './event_form.html' %} 
+	<!-- list -->
+ 	{% include './event_list.html' %} 
+             
+<!-- footer -->
+	{% include '../../base_components/footer.html' %} 
+
+</div>
+
+
+{% endblock %}

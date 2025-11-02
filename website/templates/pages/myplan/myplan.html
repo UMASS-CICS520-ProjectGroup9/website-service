@@ -1,0 +1,34 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="single">
+
+				<!-- Main -->
+					<div id="main">
+
+<!-- Post -->
+	{% include './myplan_box.html' %} 
+	{% include './myplan_box.html' %} 
+
+
+
+<!-- Pagination -->
+ 	{% include '../../components/pagination.html' %} 
+<!-- table1 -->
+ 	{% include './myplan_table1.html' %} 
+<!-- Form -->
+ 	{% include './myplan_form.html' %} 
+	<!-- list -->
+ 	{% include './myplan_list.html' %} 
+             
+<!-- footer -->
+	{% include '../../base_components/footer.html' %} 
+
+					</div>
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="single">
+
+				<!-- Main -->
+					<div id="main">
+
+<!-- Post -->
+	{% include './professor_box.html' %} 
+	{% include './professor_box.html' %} 
+
+
+
+<!-- Pagination -->
+ 	{% include '../../components/pagination.html' %} 
+<!-- table1 -->
+ 	{% include './professor_table1.html' %} 
+<!-- Form -->
+ 	{% include './professor_form.html' %} 
+	<!-- list -->
+ 	{% include './professor_list.html' %} 
+             
+<!-- footer -->
+	{% include '../../base_components/footer.html' %} 
+
+					</div>
+
+
+</div>
+
+
+{% endblock %}

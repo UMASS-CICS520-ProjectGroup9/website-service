@@ -1,0 +1,34 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="single">
+
+				<!-- Main -->
+					<div id="main">
+
+<!-- Post -->
+	{% include './course_box.html' %} 
+	{% include './course_box.html' %} 
+
+
+
+<!-- Pagination -->
+ 	{% include '../../components/pagination.html' %} 
+<!-- table1 -->
+ 	{% include './course_table1.html' %} 
+<!-- Form -->
+ 	{% include './course_form.html' %} 
+	<!-- list -->
+ 	{% include './course_list.html' %} 
+             
+<!-- footer -->
+	{% include '../../base_components/footer.html' %} 
+
+					</div>
+
+
+</div>
+
+
+{% endblock %}
