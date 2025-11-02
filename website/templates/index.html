@@ -2,6 +2,6 @@
 {% load static %}
 {% block content %}
 {% include 'pages/home/main_right.html' %} 
-{% include 'pages/home/side_left.html' %} 
+{% include 'pages/home/side_left.html' with posts=posts %} 
 
 {% endblock %}

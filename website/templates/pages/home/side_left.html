@@ -6,15 +6,16 @@
                 <section id="intro">
                     <a href="#" class="logo"><img src="{% static 'images/logo.jpg' %}" alt="" /></a>
                     <header>
-                        <h2>Future Imperfect</h2>
-                        <p>Another fine responsive site template by <a href="http://html5up.net">HTML5 UP</a></p>
+                        <h2>Academic Ultimate Map</h2>
+                        <p>Ultimate Map for Academic Strategy & Success (UMASS)</p>
                     </header>
                 </section>
 
             <!-- Mini Posts -->
                 <section>
                     <div class="mini-posts">
-
+                        <h3>Top Courses</h3>
+                        {% include './box_mini.html' %} 
                         <!-- Mini Post -->
                             <article class="mini-post">
                                 <header>
@@ -61,53 +62,16 @@
             <!-- Posts List -->
                 <section>
                     <ul class="posts">
-                        <li>
-                            <article>
-                                <header>
-                                    <h3><a href="single.html">Lorem ipsum fermentum ut nisl vitae</a></h3>
-                                    <time class="published" datetime="2015-10-20">October 20, 2015</time>
-                                </header>
-                                <a href="single.html" class="image"><img src="{% static 'images/pic08.jpg' %}" alt="" /></a>
-                            </article>
-                        </li>
-                        <li>
-                            <article>
-                                <header>
-                                    <h3><a href="single.html">Convallis maximus nisl mattis nunc id lorem</a></h3>
-                                    <time class="published" datetime="2015-10-15">October 15, 2015</time>
-                                </header>
-                                <a href="single.html" class="image"><img src="{% static 'images/pic09.jpg' %}" alt="" /></a>
-                            </article>
-                        </li>
-                        <li>
-                            <article>
-                                <header>
-                                    <h3><a href="single.html">Euismod amet placerat vivamus porttitor</a></h3>
-                                    <time class="published" datetime="2015-10-10">October 10, 2015</time>
-                                </header>
-                                <a href="single.html" class="image"><img src="{% static 'images/pic10.jpg' %}" alt="" /></a>
-                            </article>
-                        </li>
-                        <li>
-                            <article>
-                                <header>
-                                    <h3><a href="single.html">Magna enim accumsan tortor cursus ultricies</a></h3>
-                                    <time class="published" datetime="2015-10-08">October 8, 2015</time>
-                                </header>
-                                <a href="single.html" class="image"><img src="{% static 'images/pic11.jpg' %}" alt="" /></a>
-                            </article>
-                        </li>
-                        <li>
-                            <article>
-                                <header>
-                                    <h3><a href="single.html">Congue ullam corper lorem ipsum dolor</a></h3>
-                                    <time class="published" datetime="2015-10-06">October 7, 2015</time>
-                                </header>
-                                <a href="single.html" class="image"><img src="{% static 'images/pic12.jpg' %}" alt="" /></a>
-                            </article>
-                        </li>
+                        <h3>Top Professors</h3>
+                        {% for post in posts %}
+                       
+                        {% include './box_list_element.html' with post=post %} 
+                        {% endfor %}
+                       
                     </ul>
                 </section>
+
+
 
             <!-- About -->
                 <section class="blurb">

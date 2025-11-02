@@ -1,0 +1,11 @@
+ {% load static %} 
+<li>
+                            <article>
+                                <header>
+                                    <h3><a href="single.html">{{ post.topic }}</a></h3>
+                                    <p>{{post.author}}</p>
+                                    <time class="published" datetime="2015-10-20">{{post.date}}</time>
+                                </header>
+                                <a href="single.html" class="image"><img src="{% static 'images/pic08.jpg' %}" alt="" /></a>
+                            </article>
+                        </li>

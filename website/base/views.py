@@ -1,8 +1,16 @@
 from django.shortcuts import render
+import requests
 
+# posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024-01-15"},
+#          {"topic": "Study Group for Algorithms", "author": "Bob", "date": "2024-01-16"},
+#          {"topic": "Exam Preparation Tips", "author": "Charlie", "date": "2024-01-17"}]
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    response = requests.get('https://ea9a53d8-d237-4b92-bb0b-57a0b3beb806.mock.pstmn.io/test')
+    context = {
+        'posts': response.json()
+    }
+    return render(request, 'index.html', context)
 
 def events(request):
     return render(request, 'pages/events/events.html')
