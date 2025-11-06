@@ -1,7 +1,7 @@
    {% load static %}
    <!-- Main -->
         <div id="main">
-
+   {{ posts }} 
             <!-- Post -->
              <article class="post">
                 <header>
@@ -106,5 +106,8 @@
 
                 <!-- Pagination -->
  	{% include '../../components/pagination.html' %} 
+
+    <button hx-get="/home/get/" hx-target="#item-list" hx-swap="outerHTML">Load Items</button>
+<div id="item-list"></div>
 
         </div>
