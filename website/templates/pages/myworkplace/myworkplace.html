@@ -1,0 +1,35 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="single">
+
+	<!-- Main -->
+	<div id="main">
+
+		<!-- Post -->
+		{% include './myworkplace_box.html' %}
+		{% include './myworkplace_box.html' %}
+
+
+
+		<!-- Pagination -->
+		{% include '../../components/pagination.html' %}
+		<!-- table1 -->
+		{% include './myworkplace_table1.html' %}
+		<!-- Form -->
+		{% include './myworkplace_form.html' %}
+		<!-- list -->
+		{% include './myworkplace_list.html' %}
+		{% include '../../components/elements.html' %}
+
+		<!-- footer -->
+		{% include '../../base_components/footer.html' %}
+
+	</div>
+
+
+</div>
+
+
+{% endblock %}

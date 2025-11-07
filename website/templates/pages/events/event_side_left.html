@@ -1,0 +1,86 @@
+{% load static %}
+
+<!-- Sidebar -->
+<section id="sidebar">
+
+    <!-- Intro -->
+    <section id="intro">
+        <a href="#" class="logo"><img src="{% static 'images/logo.jpg' %}" alt="" /></a>
+        <header>
+            <h2>Today's Events</h2>
+            <p>Looking for a fun and engaging way to stay active? Join our Ping Pong events!</p>
+
+            <ul>
+
+
+                <form id="search" method="get" action="#">
+                    <input type="text" name="query" placeholder="Search by keywords" />
+                </form>
+
+                <ul class="actions">
+                    <li><a href="#" class="button">Search</a></li>
+                </ul>
+                <!-- <a class="fa-search" href="#search">Search</a> -->
+
+            </ul>
+        </header>
+    </section>
+
+
+
+
+
+    <!-- sort by -->
+
+    <section class="blurb">
+        <h3>Sort By</h3>
+        <div class="col-12">
+            <select name="demo-category" id="demo-category">
+                <option value="">Event Created Date</option>
+                <option value="1">Event start Date</option>
+                <option value="1">Event End Date</option>
+                <option value="1">Event Update Date</option>
+            </select>
+        </div>
+        <br>
+        <ul class="actions">
+            <li><a href="#" class="button">GO</a></li>
+        </ul>
+    </section>
+
+    <!-- sort by -->
+
+    <section class="blurb">
+        <h3>Filter By</h3>
+        <div class="col-12">
+            <select name="demo-category" id="demo-category">
+                <option value="">Creator</option>
+                <option value="1">Event Type</option>
+                <option value="1">Location</option>
+                <option value="1">Host</option>
+                <option value="1">Min Capacity</option>
+                <option value="1">Max Capacity</option>
+
+
+
+            </select>
+        </div>
+        <form id="search" method="get" action="#">
+            <input type="text" name="query" placeholder="Filter By..." />
+        </form>
+
+        <ul class="actions">
+            <li><a href="#" class="button">GO</a></li>
+        </ul>
+    </section>
+
+    <!-- Create Event -->
+    <section class="blurb">
+        <h2>Sharing your Events Now</h2>
+        <ul class="actions">
+            <li><a href="#" class="button">Create an Event</a></li>
+        </ul>
+    </section>
+    {% include '../../base_components/footer.html' %}
+
+</section>

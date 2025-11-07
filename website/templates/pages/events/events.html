@@ -3,30 +3,63 @@
 
 {% block content %}
 
-<div class="single">
+<!-- <div class="single"> -->
 
 <!-- Main -->
 <div id="main">
 
-<!-- Post -->
-	{% include './event_box.html' %} 
-	{% include './event_box.html' %} 
+	<!-- Post -->
+	{% if eventAPI %}
+	<p>Showing {{ eventAPI|length }} event{% if eventAPI|length != 1 %}s{% endif %}.</p>
+	{% for e in eventAPI %}
+	<article class="post">
+		<header>
+			<div class="title">
+				<h2><a href="{% url 'events' %}{{ e.eventID }}/">{{ e.title }}</a></h2>
+				<p>Hosted by <strong>{{ e.hosted_by }}</strong> | Capacity: <strong>{{ e.capacity }}</strong></p>
+				<p>Created by <strong>{{ e.creator }}</strong> </p>
+				<p>Starts: {{ e.event_start_date }} — Ends: {{ e.event_end_date }}</p>
+			</div>
+			<div class="meta">
+				<time class="published" datetime="{{ e.create_at }}">{{ e.created_at }}</time>
+				<a href="#" class="author"><span class="name">Organizer</span><img
+						src="{% static 'images/avatar.jpg' %}" alt="" /></a>
+			</div>
+
+		</header>
+		<p>{{ e.description|truncatechars:100 }}</p>
+
+		<footer>
+			<ul class="actions">
+				{% if e.eventID %}<li><a href="{% url 'events' %}{{e.eventID}}/" class="button large">Event Details</a>
+				</li>{% endif %}
+				{% if e.link %}<li><a class="button" href="{{ e.link }}" target="_blank">Link</a></li>{% endif %}
+				{% if e.zoom_link %}<li><a class="button" href="{{ e.zoom_link }}" target="_blank"
+						style="margin-left:8px;background:#4caf50">Join
+						Zoom</a></li>{% endif %}
+			</ul>
+			<ul class="stats">
+				<li><a href="#">Category: {{ e.eventType }}</a></li>
+				<li><a href="#" class="icon solid fa-heart">save</a></li>
+				<!-- <li><a href="#" class="icon solid fa-comment">0</a></li> -->
+			</ul>
+		</footer>
+	</article>
+	{% endfor %}
+
+	{% else %}
+	<p>No events found.</p>
+	{% endif %}
 
 
+	<!-- Pagination -->
+	{% include '../../components/pagination.html' %}
 
-<!-- Pagination -->
- 	{% include '../../components/pagination.html' %} 
-<!-- table1 -->
- 	{% include './event_table1.html' %} 
-<!-- Form -->
- 	{% include './event_form.html' %} 
-	<!-- list -->
- 	{% include './event_list.html' %} 
-             
-<!-- footer -->
-	{% include '../../base_components/footer.html' %} 
+
+	<!-- footer -->
+	{% include '../../base_components/footer.html' %}
 
 </div>
 
-
+{% include 'pages/events/event_side_left.html'%}
 {% endblock %}

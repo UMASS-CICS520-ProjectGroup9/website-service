@@ -1,0 +1,102 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+	body {
+		font-family: Arial, sans-serif;
+		margin: 24px
+	}
+
+	.meta {
+		color: #666;
+		font-size: 0.9em
+	}
+
+	.back {
+		margin-bottom: 12px;
+		display: inline-block
+	}
+
+	.button_right {
+		float: right;
+		margin-left: 8px;
+		margin-top: -60px;
+
+
+	}
+
+	.chipss {
+		display: inline-block;
+		background: #f1f1f1;
+		padding: 4px 8px;
+		border-radius: 4px;
+		margin-right: 6px
+	}
+</style>
+<div class="single">
+
+	<!-- Main -->
+	<div id="main">
+
+		<article class="post">
+			<header>
+				<div class="title">
+					<h2><a href="#">{{ event.title }}</a></h2>
+					<p>Hosted by <strong>{{ event.hosted_by }}</strong> </p>
+					<p>Capacity: <strong>{{ event.capacity }}</strong></p>
+					<p>Created by <strong>{{ event.creator }}</strong> </p>
+					<p>Event type: {{ event.eventType }} </p>
+					<p> Location: {{ event.location }}</p>
+					<p>Starts: {{ event.event_start_date }} — Ends: {{ event.event_end_date }}</p>
+				</div>
+				<div class="meta">
+					<time class="published" datetime="2015-11-01">{{ event.event_start_date }}</time>
+					<a href="#" class="author"><span class="name">{{ event.creator }}</span><img
+							src="{% static 'images/avatar.jpg' %}" alt="" /></a>
+				</div>
+			</header>
+			<span class="image featured"><img src="{{event.image_url}}" alt="" /></span>
+
+
+			<p>{{ event.description|linebreaksbr }}</p>
+
+
+
+			<p>
+				{% if event.link %}<a class="button" href="{{ event.link }}" target="_blank">Event Link</a>
+				{% endif %}
+				{% if event.zoom_link %}<a class="button" href="{{ event.zoom_link }}" target="_blank">Zoom Link</a>
+				{% endif %}
+			</p>
+
+			<h3>Registered students</h3>
+			{% if event.registered_students %}
+			<p>Total Registered: {{ event.registered_students|length }}</p>
+			{% else %}
+			<p>No students registered yet.</p>
+			{% endif %}
+			<p>Capacity: <span class="">{{ event.capacity }}</span> </p>
+			<a class="button" href="{{ event.link }}" target="_blank">Register Now</a>
+
+			<footer>
+				<ul class="stats">
+					<li><a href="#">Category: {{ event.eventType }}</a></li>
+					<li><a href="#" class="icon solid fa-heart">Register</a></li>
+					<!-- <li><a href="#" class="icon solid fa-comment">0</a></li> -->
+				</ul>
+			</footer>
+			<ul class="actions button_right">
+				<li><a href="single.html" class="button large">Remove</a></li>
+			</ul>
+			<ul class="actions button_right">
+				<li><a href="single.html" class="button large">update</a></li>
+			</ul>
+		</article>
+		<!-- footer -->
+		{% include '../../base_components/footer.html' %}
+
+	</div>
+
+
+	{% endblock %}
