@@ -31,7 +31,7 @@
 
 		<footer>
 			<ul class="actions">
-				{% if e.eventID %}<li><a href="{% url 'events' %}{{e.eventID}}/" class="button large">Event Details</a>
+				{% if e.eventID %}<li><a href="{% url 'events' %}{{e.eventID}}" class="button large">Event Details</a>
 				</li>{% endif %}
 				{% if e.link %}<li><a class="button" href="{{ e.link }}" target="_blank">Link</a></li>{% endif %}
 				{% if e.zoom_link %}<li><a class="button" href="{{ e.zoom_link }}" target="_blank"
