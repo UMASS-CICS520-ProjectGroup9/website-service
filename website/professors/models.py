@@ -1,3 +1,4 @@
+
 import requests
 
 posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024-01-15"},
@@ -5,4 +6,3 @@ posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024
          {"topic": "Exam Preparation Tips", "author": "Charlie", "date": "2024-01-17"}]
 
 # Create your models here.
-

@@ -21,6 +21,11 @@ from base import views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('', include('base.urls')),
+    path('events/', include('events.urls')),
+    path('discussions/', include('discussions.urls')),
+    path('myworkplace/', include('myworkplace.urls')),
+    path('courses/', include('courses.urls')),
+    path('professors/', include('professors.urls')),
 ]
