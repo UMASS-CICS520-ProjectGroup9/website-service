@@ -1,7 +1,9 @@
 
 import requests
 
-DISCUSSION_API_BASE_URL = "http://127.0.0.1:9003/api/discussions/"
+# NOTE: Ensure this port matches your discussions-service runserver port (DRF UI shows 8000 in your screenshots)
+DISCUSSION_API_BASE_URL = "http://127.0.0.1:8000/api/discussions/"
+COMMENT_API_BASE_URL = "http://127.0.0.1:8000/api/comments/"
 
 # Get all discussions
 def discussionAPI():
@@ -26,5 +28,13 @@ def removeDiscussion_model(id):
     response = requests.delete(f"{DISCUSSION_API_BASE_URL}{id}/")
     response.raise_for_status()
     return {"status": "success", "message": f"Discussion {id} removed."}
+
+
+# Get comments for a given discussion ID
+def getCommentsByDiscussion_model(discussion_id):
+    params = {"discussion": discussion_id}
+    response = requests.get(COMMENT_API_BASE_URL, params=params)
+    response.raise_for_status()
+    return response.json()
 
 
