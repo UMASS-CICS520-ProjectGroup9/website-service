@@ -1,8 +1,40 @@
 
 import requests
 
-posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024-01-15"},
-         {"topic": "Study Group for Algorithms", "author": "Bob", "date": "2024-01-16"},
-         {"topic": "Exam Preparation Tips", "author": "Charlie", "date": "2024-01-17"}]
+# NOTE: Ensure this port matches your discussions-service runserver port (DRF UI shows 8000 in your screenshots)
+DISCUSSION_API_BASE_URL = "http://127.0.0.1:8000/api/discussions/"
+COMMENT_API_BASE_URL = "http://127.0.0.1:8000/api/comments/"
+
+# Get all discussions
+def discussionAPI():
+    response = requests.get(DISCUSSION_API_BASE_URL)
+    response.raise_for_status()
+    return response.json()
+
+# Get a single discussion by ID
+def getDiscussionByID_model(id):
+    response = requests.get(f"{DISCUSSION_API_BASE_URL}{id}/")
+    response.raise_for_status()
+    return response.json()
+
+# Create a new discussion
+def createDiscussion_model(discussion_data):
+    response = requests.post(DISCUSSION_API_BASE_URL, json=discussion_data)
+    response.raise_for_status()
+    return response.json()
+
+# Delete a discussion by ID
+def removeDiscussion_model(id):
+    response = requests.delete(f"{DISCUSSION_API_BASE_URL}{id}/")
+    response.raise_for_status()
+    return {"status": "success", "message": f"Discussion {id} removed."}
+
+
+# Get comments for a given discussion ID
+def getCommentsByDiscussion_model(discussion_id):
+    params = {"discussion": discussion_id}
+    response = requests.get(COMMENT_API_BASE_URL, params=params)
+    response.raise_for_status()
+    return response.json()
 
 

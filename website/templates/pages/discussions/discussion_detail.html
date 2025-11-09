@@ -1,0 +1,38 @@
+{% extends '../../base_components/main.html' %}
+{% block content %}
+<div
+    style="width: 100vw; min-height: 80vh; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-radius: 0; padding: 3.5rem 6vw 3.5rem 6vw;">
+    <a href="{% url 'discussions' %}" style="text-decoration: none; color: #3498db; font-size: 1.1rem;">&larr; Back to
+        discussions</a>
+    <h2 style="margin: 2rem 0 1.2rem 0; font-weight: 800; font-size: 2.6rem; letter-spacing: 0.01em;">
+        {{discussion.title }}</h2>
+    <div style="color: #888; font-size: 1.15rem; margin-bottom: 2.2rem;">
+        <span>By <strong>{{ discussion.author }}</strong></span>
+        &nbsp;|&nbsp;
+        <span>{{ discussion.created_at|date:'Y-m-d H:i' }}</span>
+    </div>
+    <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
+        {{ discussion.body }}
+    </div>
+    <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid #eee;" />
+    <section>
+        <h3 style="font-size:1.8rem; margin-bottom:1.2rem; font-weight:700;">Comments ({{ comments|length }})</h3>
+        {% if comments %}
+        <ul style="list-style:none; padding:0; margin:0; display:grid; gap:1.25rem;">
+            {% for c in comments %}
+            <li style="background:#fafafa; border:1px solid #e5e5e5; border-radius:8px; padding:1rem 1.2rem;">
+                <div style="font-size:0.9rem; color:#777; margin-bottom:0.4rem;">
+                    <strong>{{ c.author }}</strong>
+                    <span style="color:#bbb">&middot;</span>
+                    <span>{{ c.created_at|default:'Just now' }}</span>
+                </div>
+                <div style="font-size:1.05rem; line-height:1.55;">{{ c.body }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color:#888; font-style:italic;">No comments yet. Be the first to comment.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
