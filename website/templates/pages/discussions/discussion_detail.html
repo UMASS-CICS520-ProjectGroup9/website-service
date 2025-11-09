@@ -1,0 +1,8 @@
+{% extends '../../base_components/main.html' %}
+{% block content %}
+<h1>{{ discussion.title }}</h1>
+<p>{{ discussion.body }}</p>
+<p><strong>Author:</strong> {{ discussion.author }}</p>
+<p><strong>Created at:</strong> {{ discussion.created_at }}</p>
+<a href="{% url 'discussions' %}">Back to discussions</a>
+{% endblock %}
