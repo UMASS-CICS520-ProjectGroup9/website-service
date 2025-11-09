@@ -1,8 +1,18 @@
 {% extends '../../base_components/main.html' %}
 {% block content %}
-<h1>{{ discussion.title }}</h1>
-<p>{{ discussion.body }}</p>
-<p><strong>Author:</strong> {{ discussion.author }}</p>
-<p><strong>Created at:</strong> {{ discussion.created_at }}</p>
-<a href="{% url 'discussions' %}">Back to discussions</a>
+<div
+    style="width: 100vw; min-height: 80vh; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-radius: 0; padding: 3.5rem 6vw 3.5rem 6vw;">
+    <a href="{% url 'discussions' %}" style="text-decoration: none; color: #3498db; font-size: 1.1rem;">&larr; Back to
+        discussions</a>
+    <h2 style="margin: 2rem 0 1.2rem 0; font-weight: 800; font-size: 2.6rem; letter-spacing: 0.01em;">
+        {{discussion.title }}</h2>
+    <div style="color: #888; font-size: 1.15rem; margin-bottom: 2.2rem;">
+        <span>By <strong>{{ discussion.author }}</strong></span>
+        &nbsp;|&nbsp;
+        <span>{{ discussion.created_at|date:'Y-m-d H:i' }}</span>
+    </div>
+    <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
+        {{ discussion.body }}
+    </div>
+</div>
 {% endblock %}
