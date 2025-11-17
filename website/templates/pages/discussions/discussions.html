@@ -4,28 +4,29 @@
 
 <div class="single">
 
-				<!-- Main -->
-					<div id="main">
+	<!-- Main -->
+	<div id="main">
+		<!-- list -->
+		{% include './discussion_list.html' %}
+		<!-- Form -->
+		{% include './discussion_form.html' %}
 
-<!-- Post -->
-	{% include './discussion_box.html' %} 
-	{% include './discussion_box.html' %} 
+		<!-- Post -->
+		{% include './discussion_box.html' %}
+		{% include './discussion_box.html' %}
 
 
 
-<!-- Pagination -->
- 	{% include '../../components/pagination.html' %} 
-<!-- table1 -->
- 	{% include './discussion_table1.html' %} 
-<!-- Form -->
- 	{% include './discussion_form.html' %} 
-	<!-- list -->
- 	{% include './discussion_list.html' %} 
-             
-<!-- footer -->
-	{% include '../../base_components/footer.html' %} 
+		<!-- Pagination -->
+		{% include '../../components/pagination.html' %}
+		<!-- table1 -->
+		{% include './discussion_table1.html' %}
 
-					</div>
+
+		<!-- footer -->
+		{% include '../../base_components/footer.html' %}
+
+	</div>
 
 
 </div>
