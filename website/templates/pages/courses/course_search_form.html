@@ -1,0 +1,32 @@
+{% load static %}
+<!-- form -->
+
+<article class="post">
+    <section>
+        <h3>Form</h3>
+        <form method="get" action="/courses/search/">
+            <div class="row gtr-uniform">
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="courseSubject" id="courseSubject"
+                        placeholder="Course Subject (e.g. COMPSCI)" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="courseID" id="courseID" placeholder="Course ID" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="title" id="title" placeholder="Course Title" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="instructor" id="instructor" placeholder="Instructor Name" />
+                </div>
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><input type="submit" value="Search" /></li>
+                        <li><input type="reset" value="Reset" /></li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </section>
+
+</article>

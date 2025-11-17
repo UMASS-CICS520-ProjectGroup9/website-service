@@ -1,31 +1,32 @@
 {% extends '../../base_components/main.html' %}
 {% load static %}
 {% block content %}
-
 <div class="single">
 
-				<!-- Main -->
-					<div id="main">
+	<!-- Main -->
+	<div id="main">
+		{% include 'pages/courses/course_search_form.html' %}
+		{% if searched %}
+			{% include './course_table1.html' %}
+		{% endif %}
+		<!-- Post -->
+		{% include './course_box.html' %}
+		{% include './course_box.html' %}
 
-<!-- Post -->
-	{% include './course_box.html' %} 
-	{% include './course_box.html' %} 
 
+		<!-- Pagination -->
+		{% include '../../components/pagination.html' %}
+		<!-- table1 -->
+		{% include './course_table1.html' %}
+		<!-- Form -->
+		{% include './course_form.html' %}
+		<!-- list -->
+		{% include './course_list.html' %}
 
+		<!-- footer -->
+		{% include '../../base_components/footer.html' %}
 
-<!-- Pagination -->
- 	{% include '../../components/pagination.html' %} 
-<!-- table1 -->
- 	{% include './course_table1.html' %} 
-<!-- Form -->
- 	{% include './course_form.html' %} 
-	<!-- list -->
- 	{% include './course_list.html' %} 
-             
-<!-- footer -->
-	{% include '../../base_components/footer.html' %} 
-
-					</div>
+	</div>
 
 
 </div>
