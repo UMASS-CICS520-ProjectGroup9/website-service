@@ -10,7 +10,7 @@ def main():
     try:
         # Override default port for `runserver` command
         from django.core.management.commands.runserver import Command as runserver
-        runserver.default_port = "9000"
+        runserver.default_port = "9009"
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
