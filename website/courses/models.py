@@ -5,7 +5,7 @@ posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024
          {"topic": "Study Group for Algorithms", "author": "Bob", "date": "2024-01-16"},
          {"topic": "Exam Preparation Tips", "author": "Charlie", "date": "2024-01-17"}]
 
-EXTERNAL_API_BASE_URL = "http://127.0.0.1:9004/api/courses/"  # Replace with actual API URL
+EXTERNAL_API_BASE_URL = "http://127.0.0.1:9005/api/courses/"  # Replace with actual API URL
 
 # Create your models here.
 def courseAPI(courseSubject='', courseID='', title='', instructor=''):
