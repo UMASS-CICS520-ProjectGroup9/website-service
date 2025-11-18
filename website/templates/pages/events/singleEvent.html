@@ -87,10 +87,10 @@
 				</ul>
 			</footer>
 			<ul class="actions button_right">
-				<li><a href="{% url 'events' %}remove/{{event.eventID}}" class="button large">Remove</a></li>
+				<li><a href="{% url 'removeEvent' event.eventID %}" class="button large">Remove</a></li>
 			</ul>
 			<ul class="actions button_right">
-				<li><a href="single.html" class="button large">update</a></li>
+				<li><a href="{% url 'events' %}update/form/{{event.eventID}}" class="button large">Edit</a></li>
 			</ul>
 		</article>
 		<!-- footer -->

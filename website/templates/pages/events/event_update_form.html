@@ -1,0 +1,92 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+
+{% block content %}
+<!-- form -->
+event.eventID: {{event.eventID}}
+<div id="main">
+    <article class="post">
+        <section>Update An Event</h3>
+            <form method="post" action="/events/update/form/{{event.eventID}}/">
+                {% csrf_token %}
+                <div>
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" value="{{event.title}}" required maxlength="200" />
+                </div>
+
+                <div>
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" required>{{event.description}}</textarea>
+                </div>
+
+                <div>
+                    <label for="creator">Creator</label>
+                    <input type="text" id="creator" name="creator" value="{{event.creator}}" required maxlength="100" />
+                </div>
+
+                <div>
+                    <label for="eventType">Event Type</label>
+                    <input type="text" id="eventType" name="eventType" value="{{event.eventType}}" maxlength="50" />
+                </div>
+
+                <div>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" value="{{event.location}}" maxlength="200" />
+                </div>
+
+                <div>
+                    <label for="capacity">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" min="0" value="{{event.capacity}}" required />
+                </div>
+
+                <div>
+                    <label for="link">Link (optional)</label>
+                    <input type="url" id="link" name="link" value="{{event.link}}" />
+                </div>
+
+                <div>
+                    <label for="zoom_link">Zoom link (optional)</label>
+                    <input type="url" id="zoom_link" name="zoom_link" {% if event.zoom_link %}
+                        value="{{ event.zoom_link }}" {% endif %} />
+                </div>
+
+                <div>
+                    <label for="hosted_by">Hosted by</label>
+                    <input type="text" id="hosted_by" name="hosted_by" maxlength="100" value="{{event.hosted_by}}"
+                        required />
+                </div>
+
+                <div>
+                    <label for="registered_students">Registered students (comma-separated IDs)</label>
+                    <input type="text" id="registered_students" name="registered_students"
+                        value="{{event.registered_students}}" />
+                </div>
+
+                <div>
+                    <label for="event_start_date">Start date/time</label>
+                    <input type="datetime-local" id="event_start_date" name="event_start_date"
+                        value="{{event.event_start_date}}" required />
+                </div>
+                <!-- {{event.event_start_date}} -->
+                <div>
+                    <label for="event_end_date">End date/time</label>
+                    <input type="datetime-local" id="event_end_date" name="event_end_date"
+                        value="{{event.event_end_date}}" required />
+                </div>
+                <!-- value="{{event.event_end_date}}" -->
+                <div style="margin-top:12px">
+                    <button type="submit" class="button">Update Event</button>
+                    <!-- <button type="button" id="event-reset" class="button small">Reset</button> -->
+                    <!-- <ul class="actions button_right">
+                        <li><a href="{% url 'events' %}update/form/{{event.eventID}}" class="button large">Update
+                                Event</a></li>
+                    </ul> -->
+                </div>
+            </form>
+        </section>
+
+    </article>
+</div>
+
+<!-- form -->
+{% endblock %}

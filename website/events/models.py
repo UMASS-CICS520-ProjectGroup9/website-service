@@ -31,3 +31,43 @@ def removeEvent_model(id):
     response = requests.delete(f"http://127.0.0.1:9002/api/events/{id}/delete/")
     response.raise_for_status()
     return {"status": "success", "message": f"Event {id} removed."}
+
+def updateEvent_model(id, event_data):
+    response = requests.put(f"http://127.0.0.1:9002/api/events/{id}/update/", json=event_data)
+    response.raise_for_status()
+    return {"status": "success", "message": f"Event {id} updated."}
+    
+def eventSearchByKeywords_model(query):
+    params = {
+        "q": query,
+        "page": 1,
+        "limit": 10
+    }
+    respone = requests.get("http://127.0.0.1:9002/api/events/search/", params=params)
+    respone.raise_for_status
+    return respone.json()
+
+def eventsSortedByCreationDate_model():
+    respone = requests.get("http://127.0.0.1:9002/api/events/sorted_by_creation_date/")
+    respone.raise_for_status
+    return respone.json()
+
+def eventsSortedByStartDate_model():
+    respone = requests.get("http://127.0.0.1:9002/api/events/sorted_by_start_date/")
+    respone.raise_for_status
+    return respone.json()
+
+def eventsSortedByEndDate_model():
+    respone = requests.get("http://127.0.0.1:9002/api/events/sorted_by_end_date/")
+    respone.raise_for_status
+    return respone.json()
+
+def eventsSortedByUpdateDate_model():
+    respone = requests.get("http://127.0.0.1:9002/api/events/sorted_by_update_date/")
+    respone.raise_for_status
+    return respone.json()
+
+def eventsMultipleFiltersAndInput_model(params):
+    respone = requests.get("http://127.0.0.1:9002/api/events/filters/", params=params)
+    respone.raise_for_status
+    return respone.json()

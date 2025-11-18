@@ -1,0 +1,18 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+
+{% block content %}
+<div id="main">
+    <article class="post">
+        <header>
+            <h2>Remove Event</h2>
+        </header>
+        <p>Are you sure you want to remove the event <strong>{{ event.title }}</strong>?</p>
+        <form method="post" action="{% url 'removeEvent' event.eventID %}">
+            {% csrf_token %}
+            <button type="submit" class="button">Yes, remove</button>
+            <a href="{% url 'getEventByID' event.eventID %}" class="button small">Cancel</a>
+        </form>
+    </article>
+</div>
+{% endblock %}
