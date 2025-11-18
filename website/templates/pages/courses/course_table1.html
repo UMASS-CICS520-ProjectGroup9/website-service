@@ -1,53 +1,49 @@
- {% load static %}
+{% load static %}
 <!-- table1 -->
 <article class="post">
- 
-        <section>
-                        <h3>Table 1</h3>
-                        <h4>Default</h4>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Item One</td>
-                                        <td>Ante turpis integer aliquet porttitor.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Two</td>
-                                        <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                                        <td>19.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Three</td>
-                                        <td> Morbi faucibus arcu accumsan lorem.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Four</td>
-                                        <td>Vitae integer tempus condimentum.</td>
-                                        <td>19.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Five</td>
-                                        <td>Ante turpis integer aliquet porttitor.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2"></td>
-                                        <td>100.00</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-</section>
+
+    <section>
+        <h3>Table 1</h3>
+        <h4>Default</h4>
+
+        <div class="table-wrapper">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Course Subject</th>
+                        <th>Course ID</th>
+                        <th>Title</th>
+                        <th>Instructor</th>
+                        <th>Credits</th>
+                        <th>Schedule</th>
+                        <th>Room</th>
+                        <th>Requirements</th>
+                        <th>Description</th>
+                        <th>Instruction Mode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courseAPI %}
+                    <tr>
+                        <td>{{ course.courseSubject }}</td>
+                        <td>{{ course.courseID }}</td>
+                        <td>{{ course.title }}</td>
+                        <td>{{ course.instructor }}</td>
+                        <td>{{ course.credits }}</td>
+                        <td>{{ course.schedule }}</td>
+                        <td>{{ course.room }}</td>
+                        <td>{{ course.requirements }}</td>
+                        <td>{{ course.description }}</td>
+                        <td>{{ course.instruction_mode }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">No courses found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <!-- No summary footer needed for course table -->
+            </table>
+        </div>
+    </section>
 </article>
