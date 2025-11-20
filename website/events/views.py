@@ -7,20 +7,24 @@ import requests
 from .models import posts, getEventByID_model, eventSearchByKeywords_model, eventsSortedByCreationDate_model, eventsSortedByEndDate_model, eventsMultipleFiltersAndInput_model
 from .models import eventAPI, createEvent_model, removeEvent_model, updateEvent_model, eventsSortedByStartDate_model, eventsSortedByUpdateDate_model
 
-# Configuration for external API
-EXTERNAL_API_BASE_URL = "https://api.example.com/v1"  # Replace with actual API URL
-API_KEY = ""  # Better to get from settings.py or environment variables
+
 
 def events(request):
     events = eventAPI()
-    return render(request, 'pages/events/events.html', {'eventAPI': events})
+    is_login = "access_token" in request.session
+    return render(request, 'pages/events/events.html', {'eventAPI': events, "is_login": is_login})
 
 def getEventByID(request, id):
     event = getEventByID_model(id)
-    return render(request, 'pages/events/singleEvent.html', {'event': event})
+    is_login = "access_token" in request.session
+    user_id = request.session.get('user_id')
+    return render(request, 'pages/events/singleEvent.html', {'event': event, "is_login": is_login})
 
 def eventForm(request):
-    return render(request, 'pages/events/event_form.html')
+    is_login = "access_token" in request.session
+    if not is_login:
+        return redirect("login")
+    return render(request, 'pages/events/event_form.html',{"creator_id": request.session.get("user_id")})
 
 @require_http_methods(["GET", "POST"])
 def eventFormCreation(request):
@@ -38,6 +42,7 @@ def eventFormCreation(request):
                 'title': request.POST.get('title'),
                 'description': request.POST.get('description'),
                 'creator': request.POST.get('creator'),
+                'creator_id':request.POST.get('creator_id'),
                 'eventType': request.POST.get('eventType'),
                 'location': request.POST.get('location'),
                 'capacity': int(request.POST.get('capacity', 0)),
@@ -46,6 +51,10 @@ def eventFormCreation(request):
                 'hosted_by': request.POST.get('hosted_by'),
                 'event_start_date': request.POST.get('event_start_date'),
                 'event_end_date': request.POST.get('event_end_date'),
+            }
+            headers = {
+                "Authorization": f"Bearer {request.session.get('access_token')}",
+                "Content-Type": "application/json"
             }
 
             # Handle registered_students
@@ -72,7 +81,7 @@ def eventFormCreation(request):
             #     json=form_data,
             #     headers=headers
             # )
-            created_event = createEvent_model(form_data)
+            created_event = createEvent_model(form_data, headers)
             print("Created event response:", created_event)
             event_id = created_event.get('eventID')
             if not event_id:

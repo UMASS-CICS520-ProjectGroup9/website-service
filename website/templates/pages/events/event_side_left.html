@@ -10,6 +10,8 @@
             <h2>Today's Events</h2>
             <p>Looking for a fun and engaging way to stay active? Join our Ping Pong events!</p>
 
+
+
             <ul>
 
 
@@ -26,6 +28,13 @@
 
             </ul>
         </header>
+        <!-- Create Event -->
+        <section class="blurb">
+            <h2>Sharing your Events Now</h2>
+            <ul class="actions">
+                <li><a href="{% url 'eventForm' %}" class="button">Create an Event</a></li>
+            </ul>
+        </section>
     </section>
 
 
@@ -57,6 +66,8 @@
             go.href = select.value || '#';
         });
     </script>
+
+
     <!-- sort by -->
 
     <section class="blurb">
@@ -103,13 +114,7 @@
             document.getElementById('filter-form').submit();
         });
     </script>
-    <!-- Create Event -->
-    <section class="blurb">
-        <h2>Sharing your Events Now</h2>
-        <ul class="actions">
-            <li><a href="{% url 'events' %}create/" class="button">Create an Event</a></li>
-        </ul>
-    </section>
+
     {% include '../../base_components/footer.html' %}
 
 </section>
