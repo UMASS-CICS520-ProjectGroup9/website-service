@@ -3,4 +3,5 @@ import requests
 from .models import posts
 
 def myworkplace(request):
-    return render(request, 'pages/myworkplace/myworkplace.html')
+    is_login = "access_token" in request.session
+    return render(request, 'pages/myworkplace/myworkplace.html', {"is_login": is_login})

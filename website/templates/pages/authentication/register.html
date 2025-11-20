@@ -1,0 +1,39 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- <div class="single"> -->
+
+<!-- Main -->
+<div id="main">
+    <article class="post">
+
+        <h2>Create an Account</h2>
+
+        <form method="POST" action="{% url 'registerCreate' %}">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required><br>
+
+
+            <button type="submit">Register</button>
+        </form>
+
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+
+    </article>
+    <!-- footer -->
+    {% include '../../base_components/footer.html' %}
+</div>
+
+
+<!-- </div> -->
+
+
+{% endblock %}

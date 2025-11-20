@@ -36,7 +36,7 @@
 	</section> -->
 
 	<!-- Links -->
-	<section>
+	<!-- <section>
 		<ul class="links">
 			<li>
 				<a href="#">
@@ -63,17 +63,26 @@
 				</a>
 			</li>
 		</ul>
-	</section>
+	</section> -->
 
 	<!-- Actions -->
+	{% if is_login %}
 	<section>
 		<ul class="actions stacked">
-			<li><a href="#" class="button large fit">Log In</a></li>
+			<li><a href="{% url 'logout' %}" class="button large fit">Log Out</a></li>
+		</ul>
+	</section>
+	{% endif %}
+	{% if not is_login %}
+	<section>
+		<ul class="actions stacked">
+			<li><a href="{% url 'login' %}" class="button large fit">Log In</a></li>
 		</ul>
 	</section>
 	<section>
 		<ul class="actions stacked">
-			<li><a href="#" class="button large fit">Sign Up</a></li>
+			<li><a href="{% url 'register' %}" class="button large fit">Sign Up</a></li>
 		</ul>
 	</section>
+	{% endif %}
 </section>
