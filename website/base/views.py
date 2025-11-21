@@ -4,11 +4,18 @@ from django.views.decorators.http import require_http_methods
 
 from .models import posts
 
+def getAuthen(request):
+    return  {
+        "is_login" : "access_token" in request.session,
+        "user_email" : request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
 
 # Create your views here.
 def index(request):
-    is_login = "access_token" in request.session
-    return render(request, 'index.html', { 'posts': posts, 'is_login': is_login })
+    authen = getAuthen(request)
+    return render(request, 'index.html', { 'posts': posts, 'authen': authen })
 
 def register(request):
     return render(request, 'pages/authentication/register.html')

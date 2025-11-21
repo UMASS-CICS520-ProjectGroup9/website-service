@@ -7,7 +7,9 @@
 			<li><a href="{% url 'discussions' %}">Discussions</a></li>
 			<li><a href="{% url 'courses' %}">Courses</a></li>
 			<li><a href="{% url 'professors' %}">Professors</a></li>
+			{% if authen.is_login %}
 			<li><a href="{% url 'myworkplace' %}">My Workplace</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 	<nav class="main">
@@ -65,15 +67,35 @@
 		</ul>
 	</section> -->
 
+
 	<!-- Actions -->
-	{% if is_login %}
+	{% if authen.is_login %}
+	<section>
+
+
+		<h3>Welcom Back!</h3>
+		<p>User Email: {{authen.user_email}}</p>
+		<p>Role: {{authen.role}}</p>
+		<p>ID: {{authen.user_id}}</p>
+
+
+
+	</section>
 	<section>
 		<ul class="actions stacked">
 			<li><a href="{% url 'logout' %}" class="button large fit">Log Out</a></li>
 		</ul>
 	</section>
 	{% endif %}
-	{% if not is_login %}
+	{% if not authen.is_login %}
+	<section>
+
+
+		<h3>Welcom To Log In or Sign Up</h3>
+
+
+
+	</section>
 	<section>
 		<ul class="actions stacked">
 			<li><a href="{% url 'login' %}" class="button large fit">Log In</a></li>

@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- form -->
-event.eventID: {{event.eventID}}
+
 <div id="main">
     <article class="post">
         <section>Update An Event</h3>
@@ -22,6 +22,7 @@ event.eventID: {{event.eventID}}
                 <div>
                     <label for="creator">Creator</label>
                     <input type="text" id="creator" name="creator" value="{{event.creator}}" required maxlength="100" />
+                    <input type="hidden" id="creator_id" name="creator_id" value="{{event.creator_id}}" required />
                 </div>
 
                 <div>

@@ -8,17 +8,23 @@ from .models import posts, getEventByID_model, eventSearchByKeywords_model, even
 from .models import eventAPI, createEvent_model, removeEvent_model, updateEvent_model, eventsSortedByStartDate_model, eventsSortedByUpdateDate_model
 
 
+def getAuthen(request):
+    return  {
+        "is_login" : "access_token" in request.session,
+        "user_email" : request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
 
 def events(request):
     events = eventAPI()
-    is_login = "access_token" in request.session
-    return render(request, 'pages/events/events.html', {'eventAPI': events, "is_login": is_login})
+    authen = getAuthen(request)
+    return render(request, 'pages/events/events.html', {'eventAPI': events, "authen": authen})
 
 def getEventByID(request, id):
     event = getEventByID_model(id)
-    is_login = "access_token" in request.session
-    user_id = request.session.get('user_id')
-    return render(request, 'pages/events/singleEvent.html', {'event': event, "is_login": is_login})
+    authen = getAuthen(request)
+    return render(request, 'pages/events/singleEvent.html', {'event': event, "authen": authen})
 
 def eventForm(request):
     is_login = "access_token" in request.session
@@ -35,7 +41,9 @@ def eventFormCreation(request):
     """
     
     if request.method == 'POST':
-        
+        is_login = "access_token" in request.session
+        if not is_login:
+            return redirect("login")
         try:
             # Parse form data similar to our local implementation
             form_data = {
@@ -82,7 +90,6 @@ def eventFormCreation(request):
             #     headers=headers
             # )
             created_event = createEvent_model(form_data, headers)
-            print("Created event response:", created_event)
             event_id = created_event.get('eventID')
             if not event_id:
                 raise ValueError("Event ID not returned from API.")
@@ -129,17 +136,23 @@ def removeEvent(request, id):
     
     """
     if request.method == 'POST':
-        removeEvent_model(id)
+        headers = {
+                "Authorization": f"Bearer {request.session.get('access_token')}",
+                "Content-Type": "application/json"
+            }
+        removeEvent_model(id, headers)
         return redirect('/events/')
-
     event = getEventByID_model(id)
     return render(request, 'pages/events/event_remove_confirm.html', {'event': event})
 
-
+@require_http_methods(["GET", "POST"])
 def eventFormUpdate(request, id):
     """
     Display and process the event update form for the event with the given ID and data for update.
     """
+    is_login = "access_token" in request.session
+    if not is_login:
+        return redirect("login")
     def _format_for_datetime_local(dt_value):
         """
         Convert various datetime strings to the HTML datetime-local format (YYYY-MM-DDTHH:MM).
@@ -178,6 +191,7 @@ def eventFormUpdate(request, id):
                 'title': request.POST.get('title'),
                 'description': request.POST.get('description'),
                 'creator': request.POST.get('creator'),
+                'creator_id':int(request.POST.get('creator_id', 4)),
                 'eventType': request.POST.get('eventType'),
                 'location': request.POST.get('location'),
                 'capacity': int(request.POST.get('capacity', 0)),
@@ -187,6 +201,7 @@ def eventFormUpdate(request, id):
                 'event_start_date': request.POST.get('event_start_date'),
                 'event_end_date': request.POST.get('event_end_date'),
             }
+            
 
             students_raw = request.POST.get('registered_students', '')
             if students_raw:
@@ -197,8 +212,11 @@ def eventFormUpdate(request, id):
                 ]
             else:
                 form_data['registered_students'] = []
-
-            updateEvent_model(id, form_data)
+            headers = {
+                "Authorization": f"Bearer {request.session.get('access_token')}",
+                "Content-Type": "application/json"
+            }
+            updateEvent_model(id, form_data, headers)
             return redirect('getEventByID', id=id)
 
         except requests.RequestException as e:

@@ -26,14 +26,14 @@ def createEvent_model(event_data, headers):
     data = response.json()
     return data
 
-def removeEvent_model(id):
+def removeEvent_model(id, headers):
     
-    response = requests.delete(f"http://127.0.0.1:9002/api/events/{id}/delete/")
+    response = requests.delete(f"http://127.0.0.1:9002/api/events/{id}/delete/", headers=headers)
     response.raise_for_status()
     return {"status": "success", "message": f"Event {id} removed."}
 
-def updateEvent_model(id, event_data):
-    response = requests.put(f"http://127.0.0.1:9002/api/events/{id}/update/", json=event_data)
+def updateEvent_model(id, event_data, headers):
+    response = requests.put(f"http://127.0.0.1:9002/api/events/{id}/update/", json=event_data, headers=headers)
     response.raise_for_status()
     return {"status": "success", "message": f"Event {id} updated."}
     

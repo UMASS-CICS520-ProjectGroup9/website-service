@@ -86,12 +86,17 @@
 					<!-- <li><a href="#" class="icon solid fa-comment">0</a></li> -->
 				</ul>
 			</footer>
+			{% if authen.is_login %}
+			{% if authen.role == 'ADMIN' or authen.user_id == event.creator_id %}
+
 			<ul class="actions button_right">
 				<li><a href="{% url 'removeEvent' event.eventID %}" class="button large">Remove</a></li>
 			</ul>
 			<ul class="actions button_right">
 				<li><a href="{% url 'events' %}update/form/{{event.eventID}}" class="button large">Edit</a></li>
 			</ul>
+			{% endif %}
+			{% endif %}
 		</article>
 		<!-- footer -->
 		{% include '../../base_components/footer.html' %}
