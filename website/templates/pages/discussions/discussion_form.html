@@ -1,57 +1,36 @@
 {% load static %}
-<!-- form -->
-        
-                <article class="post">
- <section>
-                        <h3>Form</h3>
-                        <form method="post" action="#">
-                            <div class="row gtr-uniform">
-                                <div class="col-6 col-12-xsmall">
-                                    <input type="text" name="demo-name" id="demo-name" value="" placeholder="Name" />
-                                </div>
-                                <div class="col-6 col-12-xsmall">
-                                    <input type="email" name="demo-email" id="demo-email" value="" placeholder="Email" />
-                                </div>
-                                <div class="col-12">
-                                    <select name="demo-category" id="demo-category">
-                                        <option value="">- Category -</option>
-                                        <option value="1">Manufacturing</option>
-                                        <option value="1">Shipping</option>
-                                        <option value="1">Administration</option>
-                                        <option value="1">Human Resources</option>
-                                    </select>
-                                </div>
-                                <div class="col-4 col-12-small">
-                                    <input type="radio" id="demo-priority-low" name="demo-priority" checked>
-                                    <label for="demo-priority-low">Low</label>
-                                </div>
-                                <div class="col-4 col-12-small">
-                                    <input type="radio" id="demo-priority-normal" name="demo-priority">
-                                    <label for="demo-priority-normal">Normal</label>
-                                </div>
-                                <div class="col-4 col-12-small">
-                                    <input type="radio" id="demo-priority-high" name="demo-priority">
-                                    <label for="demo-priority-high">High</label>
-                                </div>
-                                <div class="col-6 col-12-small">
-                                    <input type="checkbox" id="demo-copy" name="demo-copy">
-                                    <label for="demo-copy">Email me a copy</label>
-                                </div>
-                                <div class="col-6 col-12-small">
-                                    <input type="checkbox" id="demo-human" name="demo-human" checked>
-                                    <label for="demo-human">Not a robot</label>
-                                </div>
-                                <div class="col-12">
-                                    <textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <ul class="actions">
-                                        <li><input type="submit" value="Send Message" /></li>
-                                        <li><input type="reset" value="Reset" /></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </form>
-                    </section>
+<!-- discussion post form -->
 
-                      </article>
+<article class="post">
+    <section>
+        <h3>Post a Discussion</h3>
+        <form method="post" action="{% url 'discussion_create' %}">
+            {% csrf_token %}
+            <div class="row gtr-uniform">
+                <!-- 第一行兩欄：作者 & 標題 -->
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="author" id="id_author" value="" placeholder="Your name" required />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <input type="text" name="title" id="id_title" value="" placeholder="Discussion title" required />
+                </div>
+
+
+
+                <!-- 內容 body -->
+                <div class="col-12">
+                    <textarea name="body" id="id_body" placeholder="Write your question or discussion here..." rows="6"
+                        required></textarea>
+                </div>
+
+                <!-- 按鈕列 -->
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><input type="submit" value="Post Discussion" /></li>
+                        <li><input type="reset" value="Reset" /></li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </section>
+</article>
