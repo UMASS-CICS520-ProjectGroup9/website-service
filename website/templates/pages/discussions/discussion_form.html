@@ -7,7 +7,7 @@
         <form method="post" action="{% url 'discussion_create' %}">
             {% csrf_token %}
             <div class="row gtr-uniform">
-                <!-- 第一行兩欄：作者 & 標題 -->
+                <!-- Author & Title-->
                 <div class="col-6 col-12-xsmall">
                     <input type="text" name="author" id="id_author" value="" placeholder="Your name" required />
                 </div>
@@ -17,13 +17,13 @@
 
 
 
-                <!-- 內容 body -->
+                <!-- body -->
                 <div class="col-12">
                     <textarea name="body" id="id_body" placeholder="Write your question or discussion here..." rows="6"
                         required></textarea>
                 </div>
 
-                <!-- 按鈕列 -->
+                <!-- button -->
                 <div class="col-12">
                     <ul class="actions">
                         <li><input type="submit" value="Post Discussion" /></li>
