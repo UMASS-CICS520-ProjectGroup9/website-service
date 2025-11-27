@@ -2,6 +2,12 @@
 
 This is the main web interface for the Ultimate Map for Academic Strategy & Success (UMASS) project. It is a monolithic Django project that serves as the primary user-facing application, integrating functionality from various backend microservices.
 
+## Python Version and Environment
+
+- Python 3.10+ (tested with Django 5.2)
+- Install dependencies from `requirements.txt`; use a virtual environment (`python -m venv .venv && source .venv/bin/activate`).
+- Default SQLite database for local development (`website/db.sqlite3`).
+
 ## Application Structure & Pages
 
 The `website-service` is organized into several Django apps, each responsible for a specific feature set and rendering a collection of pages:
@@ -28,6 +34,16 @@ This service acts as an orchestrator, making API calls to the backend microservi
 *   `discussions-service`: For discussion threads and posts.
 *   `events-service`: To retrieve event details.
 *   `userauthen-service`: For user authentication and authorization.
+
+## All Features
+
+- Landing page with recent posts and navigation to all modules.
+- Course browsing (lists, details, search).
+- Professor browsing (lists, details, ratings).
+- Discussion forum (threads, details, creation forms).
+- Events listing, detail, search, sorting, create/update/delete with external API calls.
+- Personalized “My Workplace” dashboard assembling a user’s selected items.
+- User registration, login, and logout backed by the user authentication microservice.
 
 ## Getting Started
 
@@ -72,3 +88,33 @@ In a new terminal, start the `website-service`:
 You can now access the website at [http://127.0.0.1:8001/](http://127.0.0.1:8001/). The "Courses" page should now be populated with data from the `courses-service`.
 
 **Note:** For full functionality, you will need to run all the backend microservices, each on a different port.
+
+## Testing
+
+- Unit tests use `pytest` and `pytest-django`.
+- Run all tests from the repo root:
+  ```bash
+  pytest
+  ```
+- Django settings are wired via `pytest.ini` (`DJANGO_SETTINGS_MODULE=website.settings`).
+
+## Project Structure
+
+Key directories and files:
+
+- `website/website/` – Django project settings, URLs, WSGI/ASGI.
+- `website/base/` – Landing/auth pages and shared templates.
+- `website/events/` – Event listing, detail, search, create/update/delete views.
+- `website/courses/`, `website/professors/`, `website/discussions/`, `website/myworkplace/` – Feature modules for their respective domains.
+- `templates/` – Shared templates and page layouts.
+- `static/` – Static assets.
+- `pytest.ini` – Pytest configuration.
+- `requirements.txt` – Python dependencies.
+
+## Authentication
+
+- Authentication delegates to `userauthen-service` at `http://127.0.0.1:9111`:
+  - `POST /api/register/` for sign-up.
+  - `POST /api/token/` for login.
+- Access and refresh tokens are stored in the Django session (`access_token`, `refresh_token`), along with `email`, `user_id`, and `role`.
+- Login-required flows (e.g., event creation/update) redirect to `login` when no session token is present.
