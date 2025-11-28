@@ -9,7 +9,13 @@
     <div style="color: #888; font-size: 1.15rem; margin-bottom: 2.2rem;">
         <span>By <strong>{{ discussion.author }}</strong></span>
         &nbsp;|&nbsp;
-        <span>{{ discussion.created_at|date:'Y-m-d H:i' }}</span>
+        <span>
+            {% if discussion.created_at_display %}
+            {{ discussion.created_at_display }}
+            {% else %}
+            {{ discussion.created_at|date:'Y-m-d H:i' }}
+            {% endif %}
+        </span>
     </div>
     <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
         {{ discussion.body }}
@@ -24,7 +30,7 @@
                 <div style="font-size:0.9rem; color:#777; margin-bottom:0.4rem;">
                     <strong>{{ c.author }}</strong>
                     <span style="color:#bbb">&middot;</span>
-                    <span>{{ c.created_at|default:'Just now' }}</span>
+                    <span>{{ c.created_at_display|default:'Just now' }}</span>
                 </div>
                 <div style="font-size:1.05rem; line-height:1.55;">{{ c.body }}</div>
             </li>

@@ -15,7 +15,13 @@
             <td><a href="{% url 'discussion_detail' d.id %}">{{ d.title }}</a></td>
             <td>{{ d.body }}</td>
             <td>{{ d.author }}</td>
-            <td>{{ d.created_at }}</td>
+            <td>
+                {% if d.created_at_display %}
+                {{ d.created_at_display }}
+                {% else %}
+                {{ d.created_at|date:"Y-m-d H:i" }}
+                {% endif %}
+            </td>
         </tr>
         {% empty %}
         <tr>
