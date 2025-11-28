@@ -42,3 +42,24 @@ def discussion_create(request):
                 pass
 
     return redirect('discussions')
+
+
+def comment_create(request, pk):
+    """Handle POST from discussion detail to create a new comment via the discussions-service API.
+
+    Expects POST keys: 'author', 'body'. Redirects back to discussion detail.
+    """
+    if request.method == 'POST':
+        author = request.POST.get('author', '').strip() or 'Anonymous'
+        body = request.POST.get('body', '').strip()
+        if body:
+            payload = {'discussion': pk, 'author': author, 'body': body}
+            try:
+                # Import locally to avoid circular import risks
+                from .models import createComment_model
+                createComment_model(payload)
+            except Exception:
+                # swallow errors for now; could add messages
+                pass
+
+    return redirect('discussion_detail', pk=pk)

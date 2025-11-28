@@ -38,3 +38,11 @@ def getCommentsByDiscussion_model(discussion_id):
     return response.json()
 
 
+# Create a new comment for a given discussion
+def createComment_model(comment_data):
+    """comment_data should be a dict with keys: discussion (id), author, body"""
+    response = requests.post(COMMENT_API_BASE_URL, json=comment_data)
+    response.raise_for_status()
+    return response.json()
+
+
