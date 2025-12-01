@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 import requests
 from django.views.decorators.http import require_http_methods
+from discussions.models import discussionAPI
+from events.models import eventAPI
+from dateutil import parser
 
 from .models import posts
 
@@ -13,6 +16,26 @@ def getAuthen(request):
     }
 
 # Create your views here.
+# Create your views here.
+def index(request):
+    discussion_data = discussionAPI()
+    events_data = eventAPI()
+
+
+    for e in events_data:
+        if isinstance(e["created_at"], str):
+            e["created_at"] = parser.parse(e["created_at"])
+        if isinstance(e.get("event_start_date"), str):
+            e["event_start_date"] = parser.parse(e["event_start_date"])
+        if isinstance(e.get("event_end_date"), str):
+            e["event_end_date"] = parser.parse(e["event_end_date"])
+
+    context = {
+        'discussionData': discussion_data,
+        'eventsDate': events_data
+    }
+    return render(request, 'index.html', context)
+
 def index(request):
     authen = getAuthen(request)
     return render(request, 'index.html', { 'posts': posts, 'authen': authen })
