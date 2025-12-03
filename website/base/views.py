@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 import requests
 from django.views.decorators.http import require_http_methods
 from discussions.models import discussionAPI
-from events.models import eventAPI
+from events.models import eventsSortedByStartDate_model
 from dateutil import parser
+from django.utils import timezone
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+import math
 
-from .models import posts
+# Create your views here.
 
 def getAuthen(request):
     return  {
@@ -15,14 +19,27 @@ def getAuthen(request):
         "user_id": request.session.get("user_id")
     }
 
-# Create your views here.
-# Create your views here.
 def index(request):
     discussion_data = discussionAPI()
-    events_data = eventAPI()
+    authen = getAuthen(request)
 
+    context = {
+        'discussionData': discussion_data,
+        'authen': authen
+    }
+    
+    return render(request, 'index.html', context)
 
-    for e in events_data:
+def events_page(request, page):
+    today = timezone.localdate()
+
+    events_data = eventsSortedByStartDate_model()
+    events_today = [
+        e for e in events_data
+        if parser.parse(e["event_start_date"]).date() == today
+    ]
+    
+    for e in events_today:
         if isinstance(e["created_at"], str):
             e["created_at"] = parser.parse(e["created_at"])
         if isinstance(e.get("event_start_date"), str):
@@ -30,15 +47,23 @@ def index(request):
         if isinstance(e.get("event_end_date"), str):
             e["event_end_date"] = parser.parse(e["event_end_date"])
 
-    context = {
-        'discussionData': discussion_data,
-        'eventsDate': events_data
-    }
-    return render(request, 'index.html', context)
+    # For change pages
+    per_page = 5
+    total_pages = math.ceil(len(events_today) / per_page)
 
-def index(request):
-    authen = getAuthen(request)
-    return render(request, 'index.html', { 'posts': posts, 'authen': authen })
+    # slice page data
+    start = (page - 1) * per_page
+    end = start + per_page
+    page_events = events_today[start:end]
+
+    # render partial fragment
+    html = render_to_string("components/event_list_fragment.html", {
+        "events": page_events,
+        "current_page": page,
+        "total_pages": total_pages,
+    })
+
+    return HttpResponse(html)
 
 def register(request):
     return render(request, 'pages/authentication/register.html')

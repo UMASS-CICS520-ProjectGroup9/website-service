@@ -1,0 +1,49 @@
+{% load static %}
+
+<article class="post">
+    <header>
+        <div class="title">
+            <h2><a href="#">{{ e.title }}</a></h2>
+            <p>Hosted by <strong>{{ e.hosted_by }}</strong> | Capacity: <strong>{{ e.capacity }}</strong></p>
+            <p>Created by <strong>{{ e.creator }}</strong> </p>
+            <p>
+                Starts: {{ e.event_start_date|date:"M d, Y H:i" }}
+                —
+                Ends: {{ e.event_end_date|date:"M d, Y H:i" }}
+            </p>
+        </div>
+
+        <div class="meta">
+            <time class="published" datetime="{{ e.created_at }}">
+                {{ e.created_at|date:"F d, Y" }}
+            </time>
+            <a href="#" class="author">
+                <span class="name">Organizer</span>
+                <img src="{% static 'images/avatar.jpg' %}" alt="" />
+            </a>
+        </div>
+    </header>
+
+    <p>{{ e.description|truncatechars:100 }}</p>
+
+    <footer>
+        <ul class="actions">
+            {% if e.eventID %}
+            <li><a href="{% url 'events' %}{{e.eventID}}" class="button large">Event Details</a></li>
+            {% endif %}
+
+            {% if e.link %}
+            <li><a href="{{ e.link }}" target="_blank" class="button">Link</a></li>
+            {% endif %}
+
+            {% if e.zoom_link %}
+            <li><a href="{{ e.zoom_link }}" class="button" target="_blank" style="margin-left:8px;background:#4caf50">Join Zoom</a></li>
+            {% endif %}
+        </ul>
+
+        <ul class="stats">
+            <li><a href="#">Category: {{ e.eventType }}</a></li>
+            <li><a href="#" class="icon solid fa-heart">save</a></li>
+        </ul>
+    </footer>
+</article>

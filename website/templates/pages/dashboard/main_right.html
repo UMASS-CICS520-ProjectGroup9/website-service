@@ -1,125 +1,124 @@
 {% load static %}
 <!-- Main -->
 <div id="main">
+  {{ eventsDate }}
 
-    {{ eventsDate }}
+  <!-- Post -->
+  <article class="post">
+    <header>
+      <div class="title">
+        <h2><a href="events">Top Events Today</a></h2>
+        <p>Events, Meeting, and Posts By Students Recently</p>
+      </div>
+    </header>
 
-    <!-- Post -->
-    <article class="post">
+    <div id="event-container" hx-get="/events/page/1/" hx-trigger="load" hx-target="#event-container" hx-swap="innerHTML"></div>
+
+    <!-- Page Button -->
+    <div id="event-pagination" style="text-align:center; margin-top:20px;">
+      <button id="prev-btn" disabled>Previous</button>
+      <button id="next-btn">Next</button>
+    </div>
+  </article>
+
+  <article class="post">
+    <header>
+      <div class="title">
+        <h2><a href="events">Discussion & Topics</a></h2>
+        <p>Discussions and Topics by Students</p>
+      </div>
+    </header>
+
+    {% for p in discussionData %}
+      <article class="post">
         <header>
-            <div class="title">
-                <h2><a href="events">Top Events Today</a></h2>
-                <p>Events, Meeting, and Posts By Students Recently</p>
-            </div>
+          <div class="title">
+            <h2><a href="#">{{ p.title }}</a></h2>
+            <p>{{ p.body|truncatewords:20 }}</p>
+          </div>
+
+          <div class="meta">
+            <time class="published" datetime="{{ p.created_at }}">{{ p.created_at|date:'F d, Y' }}</time>
+            <a href="#" class="author">
+              <span class="name">{{ p.author }}</span>
+              <img src="{% static 'images/avatar.jpg' %}" alt="" />
+            </a>
+          </div>
         </header>
 
-        <!-- 🔥 Loop through event list -->
-        {% for e in eventsDate %}
-        <article class="post">
-            <header>
-                <div class="title">
-                    <h2><a href="#">{{ e.title }}</a></h2>
-                    <p>{{ e.description|truncatewords:20 }}</p>
-                </div>
+        <!-- Featured Image (optional) -->
+        <a href="#" class="image featured"><img src="{% static 'images/pic03.jpg' %}" alt="" /></a>
 
-                <div class="meta">
-                    <time class="published" datetime="{{ e.created_at }}">
-                        {{ e.created_at|date:"F d, Y" }}
-                    </time>
+        <p>{{ p.body }}</p>
 
-                    <a href="#" class="author">
-                        <span class="name">{{ e.creator }}</span>
-                        <img src="{% static 'images/avatar.jpg' %}" alt="Creator Avatar" />
-                    </a>
-                </div>
-            </header>
+        <footer>
+          <ul class="actions">
+            <li>
+              <a href="#" class="button large">Continue Reading</a>
+            </li>
+          </ul>
+          <ul class="stats">
+            <li>
+              <a href="#">General</a>
+            </li>
+            <li>
+              <a href="#" class="icon solid fa-heart">28</a>
+            </li>
+            <li>
+              <a href="#" class="icon solid fa-comment">{{ p.comments|length }}</a>
+            </li>
+          </ul>
+        </footer>
+      </article>
+    {% endfor %}
 
-            <!-- Featured image -->
-            <a href="#" class="image featured">
-                <img src="{{ e.image_url }}" alt="Event Image" />
-            </a>
+    <!-- Load the box component -->
+    {# {% include './box.html' %} #}
+  </article>
 
-            <!-- Event details -->
-            <p><strong>Type:</strong> {{ e.eventType|capfirst }}</p>
-            <p><strong>Location:</strong> {{ e.location }}</p>
-            <p>
-                <strong>Start:</strong> {{ e.event_start_date|date:"M d, Y H:i" }}
-                <br>
-                <strong>End:</strong> {{ e.event_end_date|date:"M d, Y H:i" }}
-            </p>
+  <!-- Pagination -->
+  {# {% include '../../components/pagination.html' %} #}
 
-            <footer>
-                <ul class="actions">
-                    <li><a href="#" class="button large">View Details</a></li>
-                </ul>
-                <ul class="stats">
-                    <li><a href="#">{{ e.eventType|capfirst }}</a></li>
-                    <li><a href="#" class="icon solid fa-heart">28</a></li>
-                    <li><a href="#" class="icon solid fa-comment">14</a></li>
-                </ul>
-            </footer>
-        </article>
-        {% endfor %}
-    </article>
-
-    <article class="post">
-        <header>
-            <div class="title">
-                <h2><a href="events">Discussion & Topics</a></h2>
-                <p>Discussions and Topics by Students</p>
-            </div>
-
-        </header>
-
-        {% for p in discussionData %}
-        <article class="post">
-            <header>
-                <div class="title">
-                    <h2><a href="#">{{ p.title }}</a></h2>
-                    <p>{{ p.body|truncatewords:20 }}</p>
-                </div>
-
-                <div class="meta">
-                    <time class="published" datetime="{{ p.created_at }}">
-                        {{ p.created_at|date:"F d, Y" }}
-                    </time>
-                    <a href="#" class="author">
-                        <span class="name">{{ p.author }}</span>
-                        <img src="{% static 'images/avatar.jpg' %}" alt="" />
-                    </a>
-                </div>
-            </header>
-
-            <!-- Featured Image (optional) -->
-            <a href="#" class="image featured">
-                <img src="{% static 'images/pic03.jpg' %}" alt="" />
-            </a>
-
-            <p>{{ p.body }}</p>
-
-            <footer>
-                <ul class="actions">
-                    <li><a href="#" class="button large">Continue Reading</a></li>
-                </ul>
-                <ul class="stats">
-                    <li><a href="#">General</a></li>
-                    <li><a href="#" class="icon solid fa-heart">28</a></li>
-                    <li><a href="#" class="icon solid fa-comment">{{ p.comments|length }}</a></li>
-                </ul>
-            </footer>
-        </article>
-        {% endfor %}
-
-        <!-- Load the box component -->
-        {# {% include './box.html' %} #}
-    </article>
-
-
-
-    <!-- Pagination -->
-    {% include '../../components/pagination.html' %}
-
-    <button hx-get="/home/get/" hx-target="#item-list" hx-swap="outerHTML">Load Items</button>
-    <div id="item-list"></div>
-
+  {# <button hx-get="/home/get/" hx-target="#item-list" hx-swap="outerHTML">Load Items</button> #}
+  {# <div id="item-list"></div> #}
 </div>
+
+<script>
+    function updateEventPageButtons() {
+        const info = document.querySelector("#event-page-info");
+
+        if (!info) return;
+
+        let currentPage = parseInt(info.dataset.currentPage);
+        let totalPages = parseInt(info.dataset.totalPages);
+
+        document.getElementById("prev-btn").disabled = currentPage <= 1;
+        document.getElementById("next-btn").disabled = currentPage >= totalPages;
+    }
+
+    // Next page
+    document.getElementById("next-btn").addEventListener("click", function () {
+        const info = document.querySelector("#event-page-info");
+        let currentPage = parseInt(info.dataset.currentPage);
+        let totalPages = parseInt(info.dataset.totalPages);
+
+        if (currentPage < totalPages) {
+            htmx.ajax('GET', `/events/page/${currentPage + 1}/`, '#event-container')
+               .then(updateEventPageButtons);
+        }
+    });
+
+    // Previous page
+    document.getElementById("prev-btn").addEventListener("click", function () {
+        const info = document.querySelector("#event-page-info");
+        let currentPage = parseInt(info.dataset.currentPage);
+
+        if (currentPage > 1) {
+            htmx.ajax('GET', `/events/page/${currentPage - 1}/`, '#event-container')
+               .then(updateEventPageButtons);
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", updateEventPageButtons);
+</script>
+
