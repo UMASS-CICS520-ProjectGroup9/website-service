@@ -1,0 +1,12 @@
+{% for e in events %}
+    {% include "components/event_card.html" with e=e %}
+{% empty %}
+    <p>No events found.</p>
+{% endfor %}
+
+
+<!-- Page Metadata for JS -->
+<div id="event-page-info"
+     data-current-page="{{ current_page }}"
+     data-total-pages="{{ total_pages }}">
+</div>

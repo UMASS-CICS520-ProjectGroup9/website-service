@@ -1,7 +1,7 @@
 {% load static %}
 <!-- Main -->
 <div id="main">
-  {{ eventsDate }}
+  {{ discussions }}
 
   <!-- Post -->
   <article class="post">
@@ -25,52 +25,11 @@
     <header>
       <div class="title">
         <h2><a href="events">Discussion & Topics</a></h2>
-        <p>Discussions and Topics by Students</p>
+        <p>Recent Updates Discussions and Topics by Students</p>
       </div>
     </header>
 
-    {% for p in discussionData %}
-      <article class="post">
-        <header>
-          <div class="title">
-            <h2><a href="#">{{ p.title }}</a></h2>
-            <p>{{ p.body|truncatewords:20 }}</p>
-          </div>
-
-          <div class="meta">
-            <time class="published" datetime="{{ p.created_at }}">{{ p.created_at|date:'F d, Y' }}</time>
-            <a href="#" class="author">
-              <span class="name">{{ p.author }}</span>
-              <img src="{% static 'images/avatar.jpg' %}" alt="" />
-            </a>
-          </div>
-        </header>
-
-        <!-- Featured Image (optional) -->
-        <a href="#" class="image featured"><img src="{% static 'images/pic03.jpg' %}" alt="" /></a>
-
-        <p>{{ p.body }}</p>
-
-        <footer>
-          <ul class="actions">
-            <li>
-              <a href="#" class="button large">Continue Reading</a>
-            </li>
-          </ul>
-          <ul class="stats">
-            <li>
-              <a href="#">General</a>
-            </li>
-            <li>
-              <a href="#" class="icon solid fa-heart">28</a>
-            </li>
-            <li>
-              <a href="#" class="icon solid fa-comment">{{ p.comments|length }}</a>
-            </li>
-          </ul>
-        </footer>
-      </article>
-    {% endfor %}
+    {% include '../discussions/discussion_list.html' %}
 
     <!-- Load the box component -->
     {# {% include './box.html' %} #}
@@ -84,41 +43,38 @@
 </div>
 
 <script>
-    function updateEventPageButtons() {
-        const info = document.querySelector("#event-page-info");
-
-        if (!info) return;
-
-        let currentPage = parseInt(info.dataset.currentPage);
-        let totalPages = parseInt(info.dataset.totalPages);
-
-        document.getElementById("prev-btn").disabled = currentPage <= 1;
-        document.getElementById("next-btn").disabled = currentPage >= totalPages;
+  function updateEventPageButtons() {
+    const info = document.querySelector('#event-page-info')
+  
+    if (!info) return
+  
+    let currentPage = parseInt(info.dataset.currentPage)
+    let totalPages = parseInt(info.dataset.totalPages)
+  
+    document.getElementById('prev-btn').disabled = currentPage <= 1
+    document.getElementById('next-btn').disabled = currentPage >= totalPages
+  }
+  
+  // Next page
+  document.getElementById('next-btn').addEventListener('click', function () {
+    const info = document.querySelector('#event-page-info')
+    let currentPage = parseInt(info.dataset.currentPage)
+    let totalPages = parseInt(info.dataset.totalPages)
+  
+    if (currentPage < totalPages) {
+      htmx.ajax('GET', `/events/page/${currentPage + 1}/`, '#event-container').then(updateEventPageButtons)
     }
-
-    // Next page
-    document.getElementById("next-btn").addEventListener("click", function () {
-        const info = document.querySelector("#event-page-info");
-        let currentPage = parseInt(info.dataset.currentPage);
-        let totalPages = parseInt(info.dataset.totalPages);
-
-        if (currentPage < totalPages) {
-            htmx.ajax('GET', `/events/page/${currentPage + 1}/`, '#event-container')
-               .then(updateEventPageButtons);
-        }
-    });
-
-    // Previous page
-    document.getElementById("prev-btn").addEventListener("click", function () {
-        const info = document.querySelector("#event-page-info");
-        let currentPage = parseInt(info.dataset.currentPage);
-
-        if (currentPage > 1) {
-            htmx.ajax('GET', `/events/page/${currentPage - 1}/`, '#event-container')
-               .then(updateEventPageButtons);
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", updateEventPageButtons);
+  })
+  
+  // Previous page
+  document.getElementById('prev-btn').addEventListener('click', function () {
+    const info = document.querySelector('#event-page-info')
+    let currentPage = parseInt(info.dataset.currentPage)
+  
+    if (currentPage > 1) {
+      htmx.ajax('GET', `/events/page/${currentPage - 1}/`, '#event-container').then(updateEventPageButtons)
+    }
+  })
+  
+  document.addEventListener('DOMContentLoaded', updateEventPageButtons)
 </script>
-

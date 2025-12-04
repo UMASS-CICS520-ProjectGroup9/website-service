@@ -21,10 +21,13 @@ def getAuthen(request):
 
 def index(request):
     discussion_data = discussionAPI()
+    if discussion_data:
+        discussion_data = sorted(discussion_data, key=lambda x: x['updated_at'], reverse=True)
+
     authen = getAuthen(request)
 
     context = {
-        'discussionData': discussion_data,
+        'discussions': discussion_data,
         'authen': authen
     }
     
