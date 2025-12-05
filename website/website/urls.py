@@ -28,4 +28,5 @@ urlpatterns = [
     path('myworkplace/', include('myworkplace.urls')),
     path('courses/', include('courses.urls')),
     path('professors/', include('professors.urls')),
+    path("events/page/<int:page>/", views.events_page, name="events_page"),
 ]

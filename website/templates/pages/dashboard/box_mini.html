@@ -1,6 +1,7 @@
-  {% load static %} 
- <!-- Mini Post -->
-                            <article class="mini-post">
+{% load static %}
+<!-- Mini Post -->
+<!-- 
+     <article class="mini-post">
                                 <header>
                                     <h3><a href="single.html">Vitae sed condimentum</a></h3>
                                     <time class="published" datetime="2015-10-20">October 20, 2015</time>
@@ -8,3 +9,52 @@
                                 </header>
                                 <a href="single.html" class="image"><img src="{% static 'images/pic04.jpg' %}" alt="" /></a>
                             </article>
+ -->
+
+<article class="mini-post" style="display: flex; flex-direction: column; background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 2em;">
+    
+    <header style="padding: 1.2em; border-bottom: 1px solid #eee; background-color: #f9f9f9;">
+        <h3 style="margin: 0; font-size: 1.3em; color: #333;">
+            {{ course.title }}
+        </h3>
+        <span style="display: block; font-size: 0.85em; color: #777; margin-top: 4px;">
+            {{ course.courseSubject }} {{ course.courseID }}
+        </span>
+    </header>
+
+    <div style="padding: 1.2em; flex-grow: 1;">
+        <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.95em; color: #555;">
+            <li style="margin-bottom: 0.8em; display: flex; align-items: start;">
+                <strong style="min-width: 80px; color: #333;">Schedule:</strong> 
+                <span>{{ course.schedule }}</span>
+            </li>
+            <li style="margin-bottom: 0.8em; display: flex; align-items: start;">
+                <strong style="min-width: 80px; color: #333;">Room:</strong> 
+                <span>{{ course.room }}</span>
+            </li>
+
+            {% if course.requirements %}
+            <li style="margin-bottom: 0.8em; display: flex; align-items: start; color: #d9534f;">
+                <strong style="min-width: 80px;">Reqs:</strong> 
+                <span>{{ course.requirements }}</span>
+            </li>
+            {% endif %}
+
+            {% if course.description %}
+            <li style="margin-top: 1em; font-size: 0.9em; line-height: 1.5; color: #666; padding-top: 1em; border-top: 1px dashed #eee;">
+                {{ course.description|truncatewords:20 }} </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <footer style="padding: 1em 1.2em; background-color: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 0.85em; color: #888;">
+        <div style="display: flex; align-items: center;">
+            <i class="fa fa-user" style="margin-right: 5px;"></i> <strong>{{ course.instructor }}</strong>
+        </div>
+        <div>
+            <span style="background: #eee; padding: 2px 8px; border-radius: 4px;">{{ course.credits }} Credits</span>
+            <span style="margin-left: 5px;">{{ course.instruction_mode }}</span>
+        </div>
+    </footer>
+
+</article>

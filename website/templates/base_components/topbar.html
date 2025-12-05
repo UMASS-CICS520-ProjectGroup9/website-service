@@ -1,44 +1,85 @@
+<style>
+  /* 1. [Default State (Inactive)]: Unselected items */
+  /* Apply original template font settings but force light gray color */
+  #header h1 a,
+  #header nav.links ul li a {
+    font-family: 'Raleway', Helvetica, sans-serif !important; 
+    letter-spacing: 0.25em !important; 
+    text-transform: uppercase !important; 
+    font-size: 0.7em !important; 
+    border-bottom: none !important; 
+  
+    color: #aaaaaa !important; 
+    font-weight: 400 !important; 
+    transition: color 0.2s ease;
+  }
+  
+  /* 2. [Hover State]: Slightly darker for interactivity */
+  #header h1 a:hover,
+  #header nav.links ul li a:hover {
+    color: #646464 !important; 
+  }
+  
+  /* 3. [Current Page (Active)]: Transform into "Title" style */
+  #header h1 a.active,
+  #header nav.links ul li.active a {
+    color: #3c3b3b !important; 
+    font-weight: 800 !important; 
+    cursor: default; 
+  }
+</style>
+
 <!-- Header -->
 <header id="header">
-	<h1><a href="{% url 'index' %}">Dashboard</a></h1>
-	<nav class="links">
-		<ul>
-			<li><a href="{% url 'events' %}">Events</a></li>
-			<li><a href="{% url 'discussions' %}">Discussions</a></li>
-			<li><a href="{% url 'courses' %}">Courses</a></li>
-			<li><a href="{% url 'professors' %}">Professors</a></li>
-			{% if authen.is_login %}
-			<li><a href="{% url 'myworkplace' %}">My Workplace</a></li>
-			{% endif %}
-		</ul>
-	</nav>
-	<nav class="main">
-		<ul>
-			<!-- <li class="search">
+  <h1><a href="{% url 'index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">Dashboard</a></h1>
+  <nav class="links">
+    <ul>
+      <li class="{% if request.resolver_match.url_name == 'events' or request.resolver_match.url_name == 'getEventByID' %}active{% endif %}">
+        <a href="{% url 'events' %}">Events</a>
+      </li>
+
+      <li class="{% if request.resolver_match.url_name == 'discussions' or request.resolver_match.url_name == 'discussion_detail' %}active{% endif %}">
+        <a href="{% url 'discussions' %}">Discussions</a>
+      </li>
+
+      <li class="{% if request.resolver_match.url_name == 'courses' %}active{% endif %}">
+        <a href="{% url 'courses' %}">Courses</a>
+      </li>
+      <!-- <li><a href="{% url 'professors' %}">Professors</a></li> -->
+      {% if authen.is_login %}
+        <li class="{% if request.resolver_match.url_name == 'myworkplace' %}active{% endif %}">
+          <a href="{% url 'myworkplace' %}">My Workplace</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <nav class="main">
+    <ul>
+      <!--     <li class="search">
 									<a class="fa-search" href="#search">Search</a>
 									<form id="search" method="get" action="#">
 										<input type="text" name="query" placeholder="Search" />
 									</form>
-								</li> -->
-			<li class="menu">
-				<a class="fa-bars" href="#menu">Menu</a>
-			</li>
-		</ul>
-	</nav>
+								</li>     -->
+      <li class="menu">
+        <a class="fa-bars" href="#menu">Menu</a>
+      </li>
+    </ul>
+  </nav>
 </header>
 
 <!-- Menu -->
 <section id="menu">
-
-	<!-- Search -->
-	<!-- <section>
+  <!-- Search -->
+  <!--     <section>
 		<form class="search" method="get" action="#">
 			<input type="text" name="query" placeholder="Search" />
 		</form>
-	</section> -->
+	</section>     -->
 
-	<!-- Links -->
-	<!-- <section>
+  <!-- Links -->
+  <!--     <section>
 		<ul class="links">
 			<li>
 				<a href="#">
@@ -65,46 +106,41 @@
 				</a>
 			</li>
 		</ul>
-	</section> -->
+	</section>     -->
 
-
-	<!-- Actions -->
-	{% if authen.is_login %}
-	<section>
-
-
-		<h3>Welcom Back!</h3>
-		<p>User Email: {{authen.user_email}}</p>
-		<p>Role: {{authen.role}}</p>
-		<p>ID: {{authen.user_id}}</p>
-
-
-
-	</section>
-	<section>
-		<ul class="actions stacked">
-			<li><a href="{% url 'logout' %}" class="button large fit">Log Out</a></li>
-		</ul>
-	</section>
-	{% endif %}
-	{% if not authen.is_login %}
-	<section>
-
-
-		<h3>Welcom To Log In or Sign Up</h3>
-
-
-
-	</section>
-	<section>
-		<ul class="actions stacked">
-			<li><a href="{% url 'login' %}" class="button large fit">Log In</a></li>
-		</ul>
-	</section>
-	<section>
-		<ul class="actions stacked">
-			<li><a href="{% url 'register' %}" class="button large fit">Sign Up</a></li>
-		</ul>
-	</section>
-	{% endif %}
+  <!-- Actions -->
+  {% if authen.is_login %}
+    <section>
+      <h3>Welcom Back!</h3>
+      <p>User Email: {{ authen.user_email }}</p>
+      <p>Role: {{ authen.role }}</p>
+      <p>ID: {{ authen.user_id }}</p>
+    </section>
+    <section>
+      <ul class="actions stacked">
+        <li>
+          <a href="{% url 'logout' %}" class="button large fit">Log Out</a>
+        </li>
+      </ul>
+    </section>
+  {% endif %}
+  {% if not authen.is_login %}
+    <section>
+      <h3>Welcom To Log In or Sign Up</h3>
+    </section>
+    <section>
+      <ul class="actions stacked">
+        <li>
+          <a href="{% url 'login' %}" class="button large fit">Log In</a>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <ul class="actions stacked">
+        <li>
+          <a href="{% url 'register' %}" class="button large fit">Sign Up</a>
+        </li>
+      </ul>
+    </section>
+  {% endif %}
 </section>
