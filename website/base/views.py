@@ -3,6 +3,7 @@ import requests
 from django.views.decorators.http import require_http_methods
 from discussions.models import discussionAPI
 from events.models import eventsSortedByStartDate_model
+from courses.models import courseAPI
 from dateutil import parser
 from django.utils import timezone
 from django.http import HttpResponse
@@ -23,12 +24,16 @@ def index(request):
     discussion_data = discussionAPI()
     if discussion_data:
         discussion_data = sorted(discussion_data, key=lambda x: x['updated_at'], reverse=True)
+    course_data = courseAPI()
+    if course_data:
+        course_data = course_data[:3]
 
     authen = getAuthen(request)
 
     context = {
         'discussions': discussion_data,
-        'authen': authen
+        'authen': authen,
+        'courses': course_data
     }
     
     return render(request, 'index.html', context)
