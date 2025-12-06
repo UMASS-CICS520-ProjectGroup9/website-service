@@ -39,6 +39,10 @@ def delete_course(request, courseSubject, courseID):
     """
     Handle course deletion.
     """
+    role = request.session.get("role")
+    if role not in ['ADMIN', 'STAFF']:
+        return redirect('courses')
+
     if request.method == 'POST':
         token = request.session.get("access_token")
         delete_course_api(courseSubject, courseID, token=token)
@@ -48,6 +52,10 @@ def add_course(request):
     """
     Handle adding a new course.
     """
+    role = request.session.get("role")
+    if role not in ['ADMIN', 'STAFF']:
+        return redirect('courses')
+
     if request.method == 'POST':
         data = {
             'courseSubject': request.POST.get('courseSubject'),
