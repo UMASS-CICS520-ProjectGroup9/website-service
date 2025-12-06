@@ -1,54 +1,42 @@
 {% load static %}
-<!-- table1 -->
 
 <article class="post">
-
     <section>
-        <h3>Discussions Lists</h3>
-        <h4>Discussions</h4>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Item One</td>
-                        <td>Ante turpis integer aliquet porttitor.</td>
-                        <td>29.99</td>
-                    </tr>
-                    <tr>
-                        <td>Item Two</td>
-                        <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                        <td>19.99</td>
-                    </tr>
-                    <tr>
-                        <td>Item Three</td>
-                        <td> Morbi faucibus arcu accumsan lorem.</td>
-                        <td>29.99</td>
-                    </tr>
-                    <tr>
-                        <td>Item Four</td>
-                        <td>Vitae integer tempus condimentum.</td>
-                        <td>19.99</td>
-                    </tr>
-                    <tr>
-                        <td>Item Five</td>
-                        <td>Ante turpis integer aliquet porttitor.</td>
-                        <td>29.99</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2"></td>
-                        <td>100.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+        <h3>My Discussions Lists</h3>
+        
+        {% if discussions %}
+            <p>Showing {{ discussions|length }} discussion{% if discussions|length != 1 %}s{% endif %}.</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Body</th>
+                            <th>Author</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in discussions %}
+                        <tr>
+                            <td><a href="{% url 'discussion_detail' d.id %}">{{ d.title }}</a></td>
+                            <td>{{ d.body }}</td>
+                            <td>{{ d.author }}</td>
+                            <td>
+                                {% if d.created_at_display %}
+                                    {{ d.created_at_display }}
+                                {% else %}
+                                    {{ d.created_at|date:"Y-m-d H:i" }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div> {% else %}
+            <p>No discussions found.</p>
+        {% endif %}
+        
     </section>
 </article>

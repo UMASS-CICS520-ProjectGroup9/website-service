@@ -2,54 +2,47 @@
 <!-- table1 -->
 
 <article class="post">
+  <section>
+    <h3>My Events Lists</h3>
+    {% if events %}
+      <p>
+        Showing {{ events|length }} event{% if events|length != 1 %}s{% endif %}.
+      </p>
 
-    <section>
-        <h3>My Events Lists</h3>
-        <h4>Events</h4>
-        {% if events %}
-        <p>Showing {{ events|length }} event{% if events|length != 1 %}s{% endif %}.</p>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Location</th>
-                        <th>Hosted By</th>
-                        <th>Edit</th>
-
-
-
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for e in events %}
-                    <tr>
-                        <td>{{ e.title }}</td>
-                        <td>e.description</td>
-                        <td>e.location</td>
-                        <td>e.hosted_by</td>
-                        <td><a href="{% url 'getEventByID' e.eventID %}">Edit</a></td>
-
-
-                    </tr>
-
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2"></td>
-                        <td>100.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-
-
-            {% else %}
-            <p>No events found.</p>
-            {% endif %}
-        </div>
-    </section>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Capacity</th>
+              <th>Hosted By</th>
+              <th>Event Start Date</th>
+              <th>Event End Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in events %}
+              <tr>
+                <td>{{ e.title }}</td>
+                <td>{{ e.description }}</td>
+                <td>{{ e.location }}</td>
+                <td>{{ e.capacity }}</td>
+                <td>{{ e.hosted_by }}</td>
+                <td>{{ e.event_start_date }}</td>
+                <td>{{ e.event_end_date }}</td>
+                <td>
+                  <a href="{% url 'getEventByID' e.eventID %}">more detail</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No events found.</p>
+    {% endif %}
+  </section>
 </article>
