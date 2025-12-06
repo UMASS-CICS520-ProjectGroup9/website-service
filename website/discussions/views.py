@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from .models import (
     discussionAPI,
@@ -9,6 +10,7 @@ from .models import (
     get_course_comments_model,
     create_course_comment_model,
 )
+from base.views import getAuthen
 import requests
 
 
@@ -18,10 +20,12 @@ def discussion_list(request):
     page_number = request.GET.get('page', 1)
     paginator = Paginator(discussions, 10)
     page_obj = paginator.get_page(page_number)
+    authen = getAuthen(request)
     return render(request, 'pages/discussions/discussions.html', {
         'discussions': page_obj.object_list,
         'page_obj': page_obj,
         'paginator': paginator,
+        'authen': authen,
     })
 
 
@@ -32,6 +36,8 @@ def discussion_detail(request, pk):
         'discussion': discussion,
         'comments': comments,
     }
+    # include authen so templates can show login-only UI
+    context['authen'] = getAuthen(request)
     return render(request, 'pages/discussions/discussion_detail.html', context)
 
 
@@ -50,10 +56,22 @@ def discussion_create(request):
             payload = {'author': author or 'Anonymous', 'title': title, 'body': body}
             try:
                 createDiscussion_model(payload)
-            except Exception:
-                # For now, ignore API errors and fall through to redirect (could show message)
+                # Successful create
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'ok': True}, status=201)
+                return redirect('discussions')
+            except Exception as exc:
+                # API error
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'ok': False, 'error': 'Upstream service error.'}, status=502)
+                # otherwise fall through to redirect
                 pass
+        else:
+            # Validation failed
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'ok': False, 'error': 'Title and body are required.'}, status=400)
 
+    # Default fallback for non-POST or non-AJAX
     return redirect('discussions')
 
 

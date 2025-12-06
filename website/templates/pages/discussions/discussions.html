@@ -4,10 +4,32 @@
 
 <!-- Main -->
 <div id="main">
+
+	{% if authen.is_login %}
+
+	<!-- Inline button styled like other site buttons (appears in flow, not floating) -->
+	<div style="display:flex; justify-content:flex-end; margin:0 0 1rem 0;">
+		<button id="open-discussion-btn" class="button">New Discussion</button>
+	</div>
+
+	<!-- Modal -->
+	<div id="discussion-modal" role="dialog" aria-modal="true" aria-hidden="true"
+		style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1199; align-items:center; justify-content:center;">
+		<div
+			style="background:#fff; width:90%; max-width:720px; max-height:90vh; overflow:auto; border-radius:6px; padding:1rem; position:relative;">
+			<button id="discussion-modal-close" aria-label="Close"
+				style="position:absolute; right:0.5rem; top:0.5rem; border:none; background:transparent; font-size:20px; width:0px; height:0px; line-height:40px; text-align:center; border-radius:6px; cursor:pointer;">&times;</button>
+			<h3 style="margin-top:0;">Create a Discussion</h3>
+			<div id="discussion-modal-messages" style="color:#a00; margin-bottom:0.5rem; display:none;"></div>
+			<div id="discussion-modal-content">
+				{% include './discussion_form.html' %}
+			</div>
+		</div>
+	</div>
+	{% endif %}
 	<!-- list -->
 	{% include './discussion_table1.html' %}
-	<!-- Form -->
-	{% include './discussion_form.html' %}
+
 
 
 
@@ -19,4 +41,74 @@
 
 
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+	(() => {
+		const openBtn = document.getElementById('open-discussion-btn');
+		const modal = document.getElementById('discussion-modal');
+		const closeBtn = document.getElementById('discussion-modal-close');
+		const messages = document.getElementById('discussion-modal-messages');
+
+		if (!openBtn || !modal) return;
+
+		function showModal() {
+			modal.style.display = 'flex';
+			modal.setAttribute('aria-hidden', 'false');
+		}
+		function hideModal() {
+			modal.style.display = 'none';
+			modal.setAttribute('aria-hidden', 'true');
+			messages.style.display = 'none';
+			messages.textContent = '';
+		}
+
+		openBtn.addEventListener('click', showModal);
+		closeBtn.addEventListener('click', hideModal);
+		modal.addEventListener('click', function (e) {
+			if (e.target === modal) hideModal();
+		});
+
+		// AJAX submit for the included form
+		const form = modal.querySelector('form');
+		if (!form) return;
+
+		form.addEventListener('submit', function (e) {
+			e.preventDefault();
+			messages.style.display = 'none';
+			messages.textContent = '';
+
+			const url = form.getAttribute('action');
+			const formData = new FormData(form);
+
+			// Extract CSRF token from the form
+			const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+			const csrf = csrfInput ? csrfInput.value : null;
+
+			fetch(url, {
+				method: 'POST',
+				headers: csrf ? { 'X-CSRFToken': csrf } : {},
+				body: formData,
+				credentials: 'same-origin'
+			}).then(resp => {
+				// if server returns redirect (302) fetch will follow; we'll inspect status
+				if (resp.ok) {
+					return resp.text().then(() => {
+						// Reload to show newly created discussion
+						window.location.reload();
+					});
+				}
+				return resp.text().then(text => {
+					messages.style.display = 'block';
+					messages.textContent = 'Failed to create discussion. ' + (text || '');
+				});
+			}).catch(err => {
+				messages.style.display = 'block';
+				messages.textContent = 'Network error creating discussion.';
+				console.error('discussion create error', err);
+			});
+		});
+	})();
+</script>
 {% endblock %}
