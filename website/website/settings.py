@@ -132,3 +132,4 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EXTERNAL_API_BASE_URL = "http://127.0.0.1:9004/api/courses/"
+PROFESSORS_API_BASE_URL = "http://127.0.0.1:9003/api/professors/"

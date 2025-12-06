@@ -1,0 +1,62 @@
+{% extends '../../base_components/main.html' %}
+{% load static %}
+{% block content %}
+
+<div id="main">
+    <div class="inner">
+        <h1>{{ professor.name }}</h1>
+        <h3>{{ professor.department }}</h3>
+        <p>Email: {{ professor.email }}</p>
+        <p>Office: {{ professor.office }}</p>
+        <p>Rating: {{ professor.rating }}/5.0</p>
+
+        <hr>
+
+        <h3>Reviews</h3>
+        {% if professor.reviews %}
+        {% for review in professor.reviews %}
+        <div class="box">
+            <p><strong>{{ review.author }}</strong> - {{ review.rating }}/5</p>
+            <p>{{ review.comment }}</p>
+            <p><small>{{ review.created_at }}</small></p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No reviews yet.</p>
+        {% endif %}
+
+        <hr>
+
+        <h3>Add a Review</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="fields">
+                <div class="field">
+                    <label for="author">Name</label>
+                    <input type="text" name="author" id="author" required>
+                </div>
+                <div class="field">
+                    <label for="rating">Rating (1-5)</label>
+                    <select name="rating" id="rating" required>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Good</option>
+                        <option value="3">3 - Average</option>
+                        <option value="2">2 - Poor</option>
+                        <option value="1">1 - Terrible</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="comment">Comment</label>
+                    <textarea name="comment" id="comment" rows="3" required></textarea>
+                </div>
+            </div>
+            <ul class="actions">
+                <li><input type="submit" value="Submit Review" class="primary"></li>
+            </ul>
+        </form>
+
+        <a href="{% url 'professors' %}" class="button">Back to Professors</a>
+    </div>
+</div>
+
+{% endblock %}
