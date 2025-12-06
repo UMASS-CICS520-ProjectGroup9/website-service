@@ -6,6 +6,11 @@
 	<div class="inner">
 		<header>
 			<h1>Professors</h1>
+			{% if request.session.role == 'ADMIN' or request.session.role == 'STAFF' %}
+			<ul class="actions">
+				<li><a href="{% url 'add_professor' %}" class="button primary small">Add Professor</a></li>
+			</ul>
+			{% endif %}
 		</header>
 
 		<!-- Search Form -->
@@ -41,7 +46,16 @@
 							<td>{{ professor.name }}</td>
 							<td>{{ professor.department }}</td>
 							<td>{{ professor.rating }}</td>
-							<td><a href="{% url 'professor_detail' professor.id %}" class="button small">View & Rate</a>
+							<td>
+								<a href="{% url 'professor_detail' professor.id %}" class="button small">View & Rate</a>
+								{% if request.session.role == 'ADMIN' or request.session.role == 'STAFF' %}
+								<form action="{% url 'delete_professor' professor.id %}" method="post"
+									style="display:inline;">
+									{% csrf_token %}
+									<input type="submit" value="Delete" class="button small"
+										onclick="return confirm('Are you sure you want to delete this professor?');" />
+								</form>
+								{% endif %}
 							</td>
 						</tr>
 						{% empty %}
