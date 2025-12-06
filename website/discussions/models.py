@@ -1,10 +1,11 @@
 import requests
+from django.conf import settings
 
 # NOTE: Ensure this port matches your discussions-service runserver port (DRF UI shows 8000 in your screenshots)
-DISCUSSION_API_BASE_URL = "http://127.0.0.1:8000/api/discussions/"
-COMMENT_API_BASE_URL = "http://127.0.0.1:8000/api/comments/"
-COURSE_DISCUSSION_API_BASE_URL = "http://127.0.0.1:8000/api/course-discussions/"
-COURSE_COMMENT_API_BASE_URL = "http://127.0.0.1:8000/api/course-comments/"
+DISCUSSION_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}discussions/"
+COMMENT_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}comments/"
+COURSE_DISCUSSION_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}course-discussions/"
+COURSE_COMMENT_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}course-comments/"
 
 # Get all discussions
 def discussionAPI():
