@@ -7,16 +7,17 @@ def courses(request):
     Render the courses page with all available courses.
     Calls courseAPI() with no filters to fetch all courses.
     """
-    courses = courseAPI()
+    token = request.session.get("access_token")
+    courses = courseAPI(token=token)
     return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': False})
 
 
-def get_courses_from_api(courseSubject='', courseID='', title='', instructor=''):
+def get_courses_from_api(courseSubject='', courseID='', title='', instructor='', token=None):
     """
     Helper to fetch courses from the API with optional filters.
     Passes all arguments to courseAPI().
     """
-    return courseAPI(courseSubject, courseID, title, instructor)
+    return courseAPI(courseSubject, courseID, title, instructor, token=token)
 
 
 def course_search(request):
@@ -29,7 +30,9 @@ def course_search(request):
     courseID = request.GET.get('courseID', '')
     title = request.GET.get('title', '')
     instructor = request.GET.get('instructor', '')
-    courses = get_courses_from_api(courseSubject, courseID, title, instructor)
+    
+    token = request.session.get("access_token")
+    courses = get_courses_from_api(courseSubject, courseID, title, instructor, token=token)
     return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': True})
 
 def delete_course(request, courseSubject, courseID):
@@ -37,7 +40,8 @@ def delete_course(request, courseSubject, courseID):
     Handle course deletion.
     """
     if request.method == 'POST':
-        delete_course_api(courseSubject, courseID)
+        token = request.session.get("access_token")
+        delete_course_api(courseSubject, courseID, token=token)
     return redirect('courses')
 
 def add_course(request):
@@ -57,7 +61,8 @@ def add_course(request):
             'description': request.POST.get('description'),
             'instruction_mode': request.POST.get('instruction_mode'),
         }
-        if create_course_api(data):
+        token = request.session.get("access_token")
+        if create_course_api(data, token=token):
             return redirect('courses')
         else:
             # Handle error (maybe pass an error message to the template)

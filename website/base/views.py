@@ -24,7 +24,13 @@ def index(request):
     discussion_data = discussionAPI()
     if discussion_data:
         discussion_data = sorted(discussion_data, key=lambda x: x['updated_at'], reverse=True)
-    course_data = courseAPI()
+    
+    token = request.session.get("access_token")
+    print(f"DEBUG: Index view - Token present: {bool(token)}")
+    if token:
+        print(f"DEBUG: Token: {token[:10]}...")
+
+    course_data = courseAPI(token=token)
     if course_data:
         course_data = course_data[:3]
 
