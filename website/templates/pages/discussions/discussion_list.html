@@ -1,5 +1,3 @@
-<h2>Table 1</h2>
-<strong>Default</strong>
 <table>
     <thead>
         <tr>
@@ -30,3 +28,26 @@
         {% endfor %}
     </tbody>
 </table>
+<!-- Pagination controls -->
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+<nav aria-label="Discussion pagination" style="margin-top:1rem;">
+    <ul style="list-style:none; display:flex; gap:0.5rem; padding:0;">
+        {% if page_obj.has_previous %}
+        <li><a class="button" href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a></li>
+        {% endif %}
+
+        {# show simple page links #}
+        {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+        <li><strong style="padding:0.25rem 0.6rem;">{{ num }}</strong></li>
+        {% else %}
+        <li><a href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li><a class="button" href="?page={{ page_obj.next_page_number }}">Next &rarr;</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

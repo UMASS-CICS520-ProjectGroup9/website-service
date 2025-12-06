@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 from .models import (
     discussionAPI,
     getDiscussionByID_model,
@@ -8,8 +9,16 @@ from .models import (
 
 
 def discussion_list(request):
-    discussions = discussionAPI()
-    return render(request, 'pages/discussions/discussions.html', {'discussions': discussions})
+    discussions = discussionAPI() or []
+    # Paginate discussions: 10 per page
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(discussions, 10)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'pages/discussions/discussions.html', {
+        'discussions': page_obj.object_list,
+        'page_obj': page_obj,
+        'paginator': paginator,
+    })
 
 
 def discussion_detail(request, pk):
