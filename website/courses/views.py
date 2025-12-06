@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .models import courseAPI, posts
+from django.shortcuts import render, redirect
+from .models import courseAPI, posts, delete_course_api, create_course_api
 
 
 def courses(request):
@@ -31,3 +31,36 @@ def course_search(request):
     instructor = request.GET.get('instructor', '')
     courses = get_courses_from_api(courseSubject, courseID, title, instructor)
     return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': True})
+
+def delete_course(request, courseSubject, courseID):
+    """
+    Handle course deletion.
+    """
+    if request.method == 'POST':
+        delete_course_api(courseSubject, courseID)
+    return redirect('courses')
+
+def add_course(request):
+    """
+    Handle adding a new course.
+    """
+    if request.method == 'POST':
+        data = {
+            'courseSubject': request.POST.get('courseSubject'),
+            'courseID': request.POST.get('courseID'),
+            'title': request.POST.get('title'),
+            'instructor': request.POST.get('instructor'),
+            'credits': request.POST.get('credits'),
+            'schedule': request.POST.get('schedule'),
+            'room': request.POST.get('room'),
+            'requirements': request.POST.get('requirements'),
+            'description': request.POST.get('description'),
+            'instruction_mode': request.POST.get('instruction_mode'),
+        }
+        if create_course_api(data):
+            return redirect('courses')
+        else:
+            # Handle error (maybe pass an error message to the template)
+            pass
+            
+    return render(request, 'pages/courses/add_course.html')

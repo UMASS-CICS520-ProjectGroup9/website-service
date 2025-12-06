@@ -6,8 +6,12 @@ from .models import (
     getDiscussionByID_model,
     getCommentsByDiscussion_model,
     createDiscussion_model,
+    get_course_discussion_model,
+    get_course_comments_model,
+    create_course_comment_model,
 )
 from base.views import getAuthen
+import requests
 
 
 def discussion_list(request):
@@ -90,3 +94,34 @@ def comment_create(request, pk):
                 pass
 
     return redirect('discussion_detail', pk=pk)
+
+
+def course_discussion_detail(request, course_subject, course_id):
+    discussion = get_course_discussion_model(course_subject, course_id)
+    comments = get_course_comments_model(course_subject, course_id)
+
+    context = {
+        'discussion': discussion,
+        'comments': comments,
+        'course_subject': course_subject,
+        'course_id': course_id,
+    }
+    return render(request, 'pages/courses/course_discussion_detail.html', context)
+
+
+def course_comment_create(request, course_subject, course_id):
+    """Handle POST from course discussion detail to create a new comment."""
+    if request.method == 'POST':
+        author = request.POST.get('author', '').strip() or 'Anonymous'
+        body = request.POST.get('body', '').strip()
+        discussion_id = request.POST.get('discussion_id')
+
+        if body and discussion_id:
+            payload = {'discussion': discussion_id, 'author': author, 'body': body}
+            try:
+                create_course_comment_model(payload)
+            except Exception:
+                # swallow errors for now; could add messages
+                pass
+
+    return redirect('course_discussion_detail', course_subject=course_subject, course_id=course_id)

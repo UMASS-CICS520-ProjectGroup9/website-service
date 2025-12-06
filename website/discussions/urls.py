@@ -6,4 +6,6 @@ urlpatterns = [
     path('create/', views.discussion_create, name='discussion_create'),
     path('<int:pk>/comment/', views.comment_create, name='discussion_comment_create'),
     path('<int:pk>/', views.discussion_detail, name='discussion_detail'),
+    path('<str:course_subject>/<str:course_id>/', views.course_discussion_detail, name='course_discussion_detail'),
+    path('<str:course_subject>/<str:course_id>/comment/', views.course_comment_create, name='course_comment_create'),
 ]
