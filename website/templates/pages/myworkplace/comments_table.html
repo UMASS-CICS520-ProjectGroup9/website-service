@@ -1,0 +1,42 @@
+{% load static %}
+<!-- table1 -->
+
+<article class="post">
+  <section>
+    <h3>My Comments Lists</h3>
+    {% if comments %}
+      <p>
+        Showing {{ comments|length }} comment{% if comments|length != 1 %}s{% endif %}.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Body</th>
+              <th>Author</th>
+              <th>Reply To (Discussion)</th>
+              <th style="width: 150px;">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for comment in comments %}
+              <tr>
+                <td>{{ comment.body }}</td>
+                <td>{{ comment.author }}</td>
+                 <td>
+                  <span style="font-size: 0.8em; color: #888;">on:</span>
+                  <a href="">{{ comment.discussion_title }}</a>
+                </td>
+
+                <td>{{ comment.created_at_display}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No comments found.</p>
+    {% endif %}
+  </section>
+</article>

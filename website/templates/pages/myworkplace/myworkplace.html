@@ -1,31 +1,42 @@
 {% extends '../../base_components/main.html' %}
 {% load static %}
 {% block content %}
+  <style>
+    /* 1. Hide the sidebar */
+    #sidebar {
+      display: none !important;
+    }
+    
+    /* 2. Disable the original side-by-side (Flex) layout, change to vertical stacking */
+    #wrapper {
+      display: block !important;
+      flex-direction: column !important;
+    }
+    
+    /* 3. Make the main content area take up 100% width */
+    #main {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+  </style>
 
-<div class="single">
+  <div class="single">
+    <!-- Main -->
+    <div id="main">
+      <!-- Post -->
 
-	<!-- Main -->
-	<div id="main">
+      {% include './myworkplace_box.html' %}
 
-		<!-- Post -->
+      <!-- table1 -->
+      {% include './events_table.html' %}
+      {% include './discussions_table.html' %}
+      {% include './comments_table.html' %}
+      {% include './courses_table.html' %}
+      {% include './professors_table.html' %}
 
-
-
-		{% include './myworkplace_box.html' %}
-
-		<!-- table1 -->
-		{% include './events_table.html' %}
-		{% include './discussions_table.html' %}
-		{% include './courses_table.html' %}
-		{% include './professors_table.html' %}
-
-		<!-- footer -->
-		{% include '../../base_components/footer.html' %}
-
-	</div>
-
-
-</div>
-
-
+      <!-- footer -->
+      {% include '../../base_components/footer.html' %}
+    </div>
+  </div>
 {% endblock %}
