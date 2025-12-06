@@ -5,9 +5,11 @@
 
 	<!-- Main -->
 	<div id="main">
+		{% if request.session.role == 'ADMIN' or request.session.role == 'STAFF' %}
 		<div style="margin-bottom: 20px; text-align: right;">
 			<a href="{% url 'add_course' %}" class="button primary">Add New Course</a>
 		</div>
+		{% endif %}
 		{% include 'pages/courses/course_search_form.html' %}
 		{% if searched %}
 		{% include './course_table1.html' %}
