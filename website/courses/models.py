@@ -6,7 +6,7 @@ posts = [{"topic": "Discussion about CSCI 520", "author": "Alice", "date": "2024
          {"topic": "Study Group for Algorithms", "author": "Bob", "date": "2024-01-16"},
          {"topic": "Exam Preparation Tips", "author": "Charlie", "date": "2024-01-17"}]
 
-EXTERNAL_API_BASE_URL = settings.EXTERNAL_API_BASE_URL
+COURSES_API_BASE_URL = settings.COURSES_API_BASE_URL
 
 # Create your models here.
 def courseAPI(courseSubject='', courseID='', title='', instructor='', token=None):
@@ -38,7 +38,7 @@ def courseAPI(courseSubject='', courseID='', title='', instructor='', token=None
         headers['Authorization'] = f"Bearer {token}"
 
     try:
-        response = requests.get(EXTERNAL_API_BASE_URL, params=params, headers=headers)
+        response = requests.get(COURSES_API_BASE_URL, params=params, headers=headers)
         if response.status_code == 200:
             return response.json()
         else:
@@ -51,7 +51,7 @@ def delete_course_api(courseSubject, courseID, token=None):
     """
     Delete a course via the API.
     """
-    url = f"{EXTERNAL_API_BASE_URL}{courseSubject}/{courseID}/delete/"
+    url = f"{COURSES_API_BASE_URL}{courseSubject}/{courseID}/delete/"
     headers = {}
     if token:
         headers['Authorization'] = f"Bearer {token}"
@@ -66,7 +66,7 @@ def create_course_api(data, token=None):
     """
     Create a course via the API.
     """
-    url = f"{EXTERNAL_API_BASE_URL}create/"
+    url = f"{COURSES_API_BASE_URL}create/"
     headers = {}
     if token:
         headers['Authorization'] = f"Bearer {token}"
