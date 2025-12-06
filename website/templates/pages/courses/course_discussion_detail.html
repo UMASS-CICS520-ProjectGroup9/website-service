@@ -13,8 +13,8 @@
                     <p>Discussion for {{ course_subject }} {{ course_id }}</p>
                 </div>
                 <div class="meta">
-                    <time class="published" datetime="{{ discussion.created_at }}">{{ discussion.created_at_display
-                        }}</time>
+                    <!-- prettier-ignore -->
+                    <time class="published" datetime="{{ discussion.created_at }}">{{ discussion.created_at_display }}</time>
                     <a href="#" class="author"><span class="name">{{ discussion.author }}</span><img
                             src="{% static 'images/avatar.jpg' %}" alt="" /></a>
                 </div>

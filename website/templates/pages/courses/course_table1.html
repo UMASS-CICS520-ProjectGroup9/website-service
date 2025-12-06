@@ -20,6 +20,7 @@
                         <th>Requirements</th>
                         <th>Description</th>
                         <th>Instruction Mode</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,14 @@
                         <td>{{ course.requirements }}</td>
                         <td>{{ course.description }}</td>
                         <td>{{ course.instruction_mode }}</td>
+                        <td>
+                            <form action="{% url 'delete_course' course.courseSubject course.courseID %}" method="post"
+                                style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="button small"
+                                    onclick="return confirm('Are you sure you want to delete this course?');">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>

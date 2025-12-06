@@ -34,3 +34,19 @@ def courseAPI(courseSubject='', courseID='', title='', instructor=''):
     response = requests.get(EXTERNAL_API_BASE_URL, params=params)
     data = response.json()
     return data
+
+def delete_course_api(courseSubject, courseID):
+    """
+    Delete a course via the API.
+    """
+    url = f"{EXTERNAL_API_BASE_URL}{courseSubject}/{courseID}/delete/"
+    response = requests.delete(url)
+    return response.status_code == 204
+
+def create_course_api(data):
+    """
+    Create a course via the API.
+    """
+    url = f"{EXTERNAL_API_BASE_URL}create/"
+    response = requests.post(url, data=data)
+    return response.status_code == 201
