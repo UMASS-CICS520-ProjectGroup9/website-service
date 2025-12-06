@@ -5,9 +5,12 @@
 
 	<!-- Main -->
 	<div id="main">
+		<div style="margin-bottom: 20px; text-align: right;">
+			<a href="{% url 'add_course' %}" class="button primary">Add New Course</a>
+		</div>
 		{% include 'pages/courses/course_search_form.html' %}
 		{% if searched %}
-			{% include './course_table1.html' %}
+		{% include './course_table1.html' %}
 		{% endif %}
 		<!-- Post -->
 		{% include './course_box.html' %}
