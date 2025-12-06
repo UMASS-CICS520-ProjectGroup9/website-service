@@ -1,53 +1,66 @@
- {% load static %}
+{% load static %}
 <!-- table1 -->
 <article class="post">
- 
-        <section>
-                        <h3>Table 1</h3>
-                        <h4>Default</h4>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Item One</td>
-                                        <td>Ante turpis integer aliquet porttitor.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Two</td>
-                                        <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                                        <td>19.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Three</td>
-                                        <td> Morbi faucibus arcu accumsan lorem.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Four</td>
-                                        <td>Vitae integer tempus condimentum.</td>
-                                        <td>19.99</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Item Five</td>
-                                        <td>Ante turpis integer aliquet porttitor.</td>
-                                        <td>29.99</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="2"></td>
-                                        <td>100.00</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-</section>
+
+    {% load static %}
+
+    <section>
+        <h3>Table 1</h3>
+        <h4>Discussions</h4>
+        <div class="table-wrapper">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Body</th>
+                        <th>Author</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in discussions %}
+                    <tr>
+                        <td><a href="{% url 'discussion_detail' d.id %}">{{ d.title }}</a></td>
+                        <td>{{ d.body|truncatewords:20 }}</td>
+                        <td>{{ d.author }}</td>
+                        <td>
+                            {% if d.created_at_display %}
+                            {{ d.created_at_display }}
+                            {% else %}
+                            {{ d.created_at|date:"Y-m-d H:i" }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No discussions yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj and page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Discussion pagination" style="margin-top:1rem;">
+            <ul style="list-style:none; display:flex; gap:0.5rem; padding:0;">
+                {% if page_obj.has_previous %}
+                <li><a class="button" href="?page={{ page_obj.previous_page_number }}">&larr; Previous</a></li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                <li><strong style="padding:0.25rem 0.6rem;">{{ num }}</strong></li>
+                {% else %}
+                <li><a href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li><a class="button" href="?page={{ page_obj.next_page_number }}">Next &rarr;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </section>
 </article>

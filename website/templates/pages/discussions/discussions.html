@@ -2,25 +2,21 @@
 {% load static %}
 {% block content %}
 
-<div class="single">
-
-	<!-- Main -->
-	<div id="main">
-		<!-- list -->
-		{% include './discussion_list.html' %}
-		<!-- Form -->
-		{% include './discussion_form.html' %}
+<!-- Main -->
+<div id="main">
+	<!-- list -->
+	{% include './discussion_table1.html' %}
+	<!-- Form -->
+	{% include './discussion_form.html' %}
 
 
 
 
-		<!-- footer -->
-		{% include '../../base_components/footer.html' %}
-
-	</div>
-
+	<!-- footer -->
+	{% include '../../base_components/footer.html' %}
 
 </div>
+
 
 
 {% endblock %}
