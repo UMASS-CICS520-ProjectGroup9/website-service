@@ -2,33 +2,58 @@
 {% load static %}
 {% block content %}
 
-<div class="single">
+<div id="main">
+	<div class="inner">
+		<header>
+			<h1>Professors</h1>
+		</header>
 
-				<!-- Main -->
-					<div id="main">
-
-<!-- Post -->
-	{% include './professor_box.html' %} 
-	{% include './professor_box.html' %} 
-
-
-
-<!-- Pagination -->
- 	{% include '../../components/pagination.html' %} 
-<!-- table1 -->
- 	{% include './professor_table1.html' %} 
-<!-- Form -->
- 	{% include './professor_form.html' %} 
-	<!-- list -->
- 	{% include './professor_list.html' %} 
-             
-<!-- footer -->
-	{% include '../../base_components/footer.html' %} 
-
+		<!-- Search Form -->
+		<section>
+			<form method="get" action="{% url 'professors' %}">
+				<div class="row gtr-uniform">
+					<div class="col-9 col-12-xsmall">
+						<input type="text" name="query" id="query" value="{{ query }}"
+							placeholder="Search by name or department" />
 					</div>
+					<div class="col-3 col-12-xsmall">
+						<input type="submit" value="Search" class="primary fit" />
+					</div>
+				</div>
+			</form>
+		</section>
 
-
+		<!-- Professors List -->
+		<section>
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Department</th>
+							<th>Rating</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for professor in professors %}
+						<tr>
+							<td>{{ professor.name }}</td>
+							<td>{{ professor.department }}</td>
+							<td>{{ professor.rating }}</td>
+							<td><a href="{% url 'professor_detail' professor.id %}" class="button small">View & Rate</a>
+							</td>
+						</tr>
+						{% empty %}
+						<tr>
+							<td colspan="4">No professors found.</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</div>
 </div>
-
 
 {% endblock %}
