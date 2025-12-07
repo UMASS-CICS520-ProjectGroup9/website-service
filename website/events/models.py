@@ -9,7 +9,7 @@ EXTERNAL_API_BASE_URL = "http://127.0.0.1:9002/api/events/"  # Replace with actu
 
 # Create your models here.
 def eventAPI():
-    response = requests.get("http://127.0.0.1:9002/api/events/")
+    response = requests.get("ping4learn1.pythonanywhere.com/api/events/")
     data = response.json()
     return data  
     
