@@ -1,51 +1,84 @@
 {% load static %}
 <!-- table1 -->
-
 <article class="post">
+  {{professorsReviews}}
+  {% if authen.role == 'ADMIN' %}
+    <section>
+      <h3>My Professors Lists</h3>
+      {% if professors %}
+        <p>
+          Showing {{ professors|length }} professor{% if professors|length != 1 %}s{% endif %}.
+        </p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Office</th>
+                <th>Rating</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for professor in professors %}
+                <tr>
+                  <td>{{ professor.name }}</td>
+                  <td>{{ professor.department }}</td>
+                  <td>{{ professor.email }}</td>
+                  <td>{{ professor.office }}</td>
+                  <td>{{ professor.rating }}</td>
+
+                  <td>
+                    <a href="">edit</a>
+                    <a href="">remove</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p>No professors found.</p>
+      {% endif %}
+      <hr style="border-top: 1px dashed rgba(160,160,160,0.3); margin: 2em 0;" />
+    </section>
+  {% endif %}
   <section>
-    <h3>My Professors Lists</h3>
-    {% if professors %}
+    <h3>My Professors Reviews Lists</h3>
+    {% if professorsReviews %}
       <p>
-        Showing {{ professors|length }} professor{% if professors|length != 1 %}s{% endif %}.
+        Showing {{ professorsReviews|length }} professor reviews{% if professorsReviews|length != 1 %}s{% endif %}.
       </p>
 
       <div class="table-wrapper">
         <table>
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Course ID</th>
-              <th>Schedule</th>
-              <th>Room</th>
-              <th>Requirements</th>
-              <th>Description</th>
-              <th>Instructor</th>
-              <th>Instruction Mode</th>
-              <th>Action</th>
+              <th>Professor Name</th>
+              <th>Comment</th>
+              <th>Rating</th>
+              <th>Author</th>
+              <th>Create Time</th>
             </tr>
           </thead>
           <tbody>
-            {% for professor in professors %}
+            {% for professorsReview in professorsReviews %}
               <tr>
-                <td>{{ course.title }}</td>
-                <td>{{ course.courseSubject }} {{ course.courseID }}</td>
-                <td>{{ course.schedule }}</td>
-                <td>{{ course.room }}</td>
-                <td>{{ course.requirements }}</td>
-                <td>{{ course.description|truncatewords:20 }}</td>
-                <td>{{ course.instructor }}</td>
-                <td>{{ course.instruction_mode }}</td>
-                <td>
-                  <a href="">edit</a>
-                  <a href="">remove</a>
-                </td>
+                <td>{{ professorsReview.professor_name }}</td>
+                <td>{{ professorsReview.comment }}</td>
+                <td>{{ professorsReview.rating }}</td>
+                <td>{{ professorsReview.author }}</td>
+                <td>{{ professorsReview.created_at }}</td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     {% else %}
-      <p>No professors found.</p>
+      <p>No professors reviews found.</p>
     {% endif %}
   </section>
 </article>
