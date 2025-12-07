@@ -20,7 +20,14 @@
     <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
         {{ discussion.body }}
     </div>
-    {% if authen.is_login and authen.user_id and discussion.creator_id and authen.user_id == discussion.creator_id %}
+    {% comment %}Show delete to creator OR admin{% endcomment %}
+    {% if authen.is_login and authen.role == 'ADMIN' %}
+    <div style="margin: 1rem 0 2rem 0;">
+        <a href="/discussions/remove/{{ discussion.id }}/"
+            style="background:#e74c3c; color:#fff; padding:0.6rem 1rem; border-radius:4px; text-decoration:none;">Delete
+            Discussion</a>
+    </div>
+    {% elif authen.is_login and authen.user_id and discussion.creator_id and authen.user_id == discussion.creator_id %}
     <div style="margin: 1rem 0 2rem 0;">
         <a href="/discussions/remove/{{ discussion.id }}/"
             style="background:#e74c3c; color:#fff; padding:0.6rem 1rem; border-radius:4px; text-decoration:none;">Delete
@@ -38,7 +45,13 @@
                     <strong>{{ c.author }}</strong>
                     <span style="color:#bbb">&middot;</span>
                     <span>{{ c.created_at_display|default:'Just now' }}</span>
-                    {% if authen.is_login and authen.user_id and c.creator_id and authen.user_id == c.creator_id %}
+                    {% comment %}Show comment delete to creator OR admin{% endcomment %}
+                    {% if authen.is_login and authen.role == 'ADMIN' %}
+                    <span style="margin-left:0.75rem;">
+                        <a href="/discussions/comment/remove/{{ c.id }}/"
+                            style="color:#e74c3c; text-decoration:none;">Delete</a>
+                    </span>
+                    {% elif authen.is_login and authen.user_id and c.creator_id and authen.user_id == c.creator_id %}
                     <span style="margin-left:0.75rem;">
                         <a href="/discussions/comment/remove/{{ c.id }}/"
                             style="color:#e74c3c; text-decoration:none;">Delete</a>
