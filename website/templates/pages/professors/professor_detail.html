@@ -19,6 +19,13 @@
             <p><strong>{{ review.author }}</strong> - {{ review.rating }}/5</p>
             <p>{{ review.comment }}</p>
             <p><small>{{ review.created_at }}</small></p>
+            {% if request.session.user_id == review.creator_id or request.session.role == 'ADMIN' %}
+            <form method="post" action="{% url 'delete_review' review.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="button small"
+                    onclick="return confirm('Delete this review?');">Delete</button>
+            </form>
+            {% endif %}
         </div>
         {% endfor %}
         {% else %}
