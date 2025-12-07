@@ -11,4 +11,5 @@ urlpatterns = [
     path('comment/remove/<int:id>/', views.removeComment, name='removeComment'),
     path('<str:course_subject>/<str:course_id>/', views.course_discussion_detail, name='course_discussion_detail'),
     path('<str:course_subject>/<str:course_id>/comment/', views.course_comment_create, name='course_comment_create'),
+    path('<str:course_subject>/<str:course_id>/comment/remove/<int:id>/', views.remove_course_comment, name='remove_course_comment'),
 ]
