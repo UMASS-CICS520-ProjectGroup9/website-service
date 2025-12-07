@@ -50,6 +50,12 @@ def createComment_model(comment_data):
     response.raise_for_status()
     return response.json()
 
+def removeComment_model(id, headers=None):
+    """Delete a comment by ID. Headers may include Authorization and X-User-ID."""
+    response = requests.delete(f"{COMMENT_API_BASE_URL}{id}/", headers=headers or {})
+    response.raise_for_status()
+    return {"status": "success", "message": f"Comment {id} removed."}
+
 
 # Get a course discussion by subject and ID
 def get_course_discussion_model(course_subject, course_id):

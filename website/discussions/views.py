@@ -163,3 +163,36 @@ def removeDiscussion(request, id):
         'discussion': discussion,
         'authen': authen
     })
+
+def removeComment(request, id):
+    """
+    Handle comment deletion by ID via the discussions-service API.
+    GET: Show confirmation; POST: perform deletion.
+    Redirects back to the parent discussion detail page.
+    """
+    if request.method == 'POST':
+        headers = {
+            "Authorization": f"Bearer {request.session.get('access_token')}",
+            "Content-Type": "application/json",
+            "X-User-ID": str(request.session.get('user_id') or '')
+        }
+        try:
+            from .models import removeComment_model
+            removeComment_model(id, headers)
+        except requests.RequestException:
+            return JsonResponse({'error': 'Failed to delete comment.'}, status=500)
+
+        # After deletion, try to redirect back to discussion detail.
+        # We may need the discussion id; if not available, redirect to list.
+        # Fetching comment before delete isn't possible here; assume client posts discussion_id hidden.
+        parent_discussion_id = request.POST.get('discussion_id')
+        if parent_discussion_id:
+            return redirect('discussion_detail', pk=parent_discussion_id)
+        return redirect('discussions')
+
+    # GET: render a simple confirmation (optional: include hidden discussion_id if passed as query)
+    authen = getAuthen(request)
+    return render(request, 'pages/discussions/comment_remove_confirm.html', {
+        'comment_id': id,
+        'authen': authen
+    })

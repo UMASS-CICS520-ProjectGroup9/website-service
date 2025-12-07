@@ -38,6 +38,12 @@
                     <strong>{{ c.author }}</strong>
                     <span style="color:#bbb">&middot;</span>
                     <span>{{ c.created_at_display|default:'Just now' }}</span>
+                    {% if authen.is_login and authen.user_id and c.creator_id and authen.user_id == c.creator_id %}
+                    <span style="margin-left:0.75rem;">
+                        <a href="/discussions/comment/remove/{{ c.id }}/"
+                            style="color:#e74c3c; text-decoration:none;">Delete</a>
+                    </span>
+                    {% endif %}
                 </div>
                 <div style="font-size:1.05rem; line-height:1.55;">{{ c.body }}</div>
             </li>
