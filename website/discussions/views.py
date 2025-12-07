@@ -9,6 +9,7 @@ from .models import (
     get_course_discussion_model,
     get_course_comments_model,
     create_course_comment_model,
+    removeDiscussion_model,
 )
 from base.views import getAuthen
 import requests
@@ -47,13 +48,18 @@ def discussion_create(request):
     Expects POST keys: 'author', 'title', 'body'. Redirects to the list view on success.
     """
     if request.method == 'POST':
-        author = request.POST.get('author', '').strip()
+        form_author = request.POST.get('author', '').strip()
         title = request.POST.get('title', '').strip()
         body = request.POST.get('body', '').strip()
+        authen = getAuthen(request)
+        # prefer logged-in user's email/name when available
+        author = authen.get('user_email') or form_author or 'Anonymous'
 
         # Minimal validation
         if title and body:
-            payload = {'author': author or 'Anonymous', 'title': title, 'body': body}
+            payload = {'author': author, 'title': title, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 createDiscussion_model(payload)
                 # Successful create
@@ -81,10 +87,14 @@ def comment_create(request, pk):
     Expects POST keys: 'author', 'body'. Redirects back to discussion detail.
     """
     if request.method == 'POST':
-        author = request.POST.get('author', '').strip() or 'Anonymous'
+        form_author = request.POST.get('author', '').strip()
         body = request.POST.get('body', '').strip()
+        authen = getAuthen(request)
+        author = authen.get('user_email') or form_author or 'Anonymous'
         if body:
             payload = {'discussion': pk, 'author': author, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 # Import locally to avoid circular import risks
                 from .models import createComment_model
@@ -117,7 +127,10 @@ def course_comment_create(request, course_subject, course_id):
         discussion_id = request.POST.get('discussion_id')
 
         if body and discussion_id:
+            authen = getAuthen(request)
             payload = {'discussion': discussion_id, 'author': author, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 create_course_comment_model(payload)
             except Exception:
@@ -125,3 +138,61 @@ def course_comment_create(request, course_subject, course_id):
                 pass
 
     return redirect('course_discussion_detail', course_subject=course_subject, course_id=course_id)
+
+def removeDiscussion(request, id):
+    """
+    Handle discussion deletion by ID via the discussions-service API.
+    Confirm deletion via a GET request and process deletion via POST.
+    """
+    if request.method == 'POST':
+        headers = {
+            "Authorization": f"Bearer {request.session.get('access_token')}",
+                "Content-Type": "application/json",
+                "X-User-ID": str(request.session.get('user_id') or '')
+        }
+        try:
+            removeDiscussion_model(id, headers)
+            return redirect('discussions')
+        except requests.RequestException as e:
+            return JsonResponse({'error': 'Failed to delete discussion. Please try again later.'}, status=500)
+
+    # For GET requests, render a confirmation page
+    discussion = getDiscussionByID_model(id)
+    authen = getAuthen(request)
+    return render(request, 'pages/discussions/discussion_remove_confirm.html', {
+        'discussion': discussion,
+        'authen': authen
+    })
+
+def removeComment(request, id):
+    """
+    Handle comment deletion by ID via the discussions-service API.
+    GET: Show confirmation; POST: perform deletion.
+    Redirects back to the parent discussion detail page.
+    """
+    if request.method == 'POST':
+        headers = {
+            "Authorization": f"Bearer {request.session.get('access_token')}",
+            "Content-Type": "application/json",
+            "X-User-ID": str(request.session.get('user_id') or '')
+        }
+        try:
+            from .models import removeComment_model
+            removeComment_model(id, headers)
+        except requests.RequestException:
+            return JsonResponse({'error': 'Failed to delete comment.'}, status=500)
+
+        # After deletion, try to redirect back to discussion detail.
+        # We may need the discussion id; if not available, redirect to list.
+        # Fetching comment before delete isn't possible here; assume client posts discussion_id hidden.
+        parent_discussion_id = request.POST.get('discussion_id')
+        if parent_discussion_id:
+            return redirect('discussion_detail', pk=parent_discussion_id)
+        return redirect('discussions')
+
+    # GET: render a simple confirmation (optional: include hidden discussion_id if passed as query)
+    authen = getAuthen(request)
+    return render(request, 'pages/discussions/comment_remove_confirm.html', {
+        'comment_id': id,
+        'authen': authen
+    })
