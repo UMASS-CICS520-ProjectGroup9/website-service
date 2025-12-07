@@ -26,8 +26,11 @@ def createDiscussion_model(discussion_data):
     return response.json()
 
 # Delete a discussion by ID
-def removeDiscussion_model(id):
-    response = requests.delete(f"{DISCUSSION_API_BASE_URL}{id}/")
+def removeDiscussion_model(id, headers=None):
+    """Delete a discussion by ID.
+    Optionally pass headers (e.g., Authorization) for protected endpoints.
+    """
+    response = requests.delete(f"{DISCUSSION_API_BASE_URL}{id}/", headers=headers or {})
     response.raise_for_status()
     return {"status": "success", "message": f"Discussion {id} removed."}
 

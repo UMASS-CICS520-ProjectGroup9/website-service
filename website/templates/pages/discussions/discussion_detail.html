@@ -20,6 +20,13 @@
     <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
         {{ discussion.body }}
     </div>
+    {% if authen.is_login and authen.user_id and discussion.creator_id and authen.user_id == discussion.creator_id %}
+    <div style="margin: 1rem 0 2rem 0;">
+        <a href="/discussions/remove/{{ discussion.id }}/"
+            style="background:#e74c3c; color:#fff; padding:0.6rem 1rem; border-radius:4px; text-decoration:none;">Delete
+            Discussion</a>
+    </div>
+    {% endif %}
     <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid #eee;" />
     <section>
         <h3 style="font-size:1.8rem; margin-bottom:1.2rem; font-weight:700;">Comments ({{ comments|length }})</h3>

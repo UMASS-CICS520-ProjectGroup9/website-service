@@ -9,6 +9,7 @@ from .models import (
     get_course_discussion_model,
     get_course_comments_model,
     create_course_comment_model,
+    removeDiscussion_model,
 )
 from base.views import getAuthen
 import requests
@@ -137,3 +138,28 @@ def course_comment_create(request, course_subject, course_id):
                 pass
 
     return redirect('course_discussion_detail', course_subject=course_subject, course_id=course_id)
+
+def removeDiscussion(request, id):
+    """
+    Handle discussion deletion by ID via the discussions-service API.
+    Confirm deletion via a GET request and process deletion via POST.
+    """
+    if request.method == 'POST':
+        headers = {
+            "Authorization": f"Bearer {request.session.get('access_token')}",
+                "Content-Type": "application/json",
+                "X-User-ID": str(request.session.get('user_id') or '')
+        }
+        try:
+            removeDiscussion_model(id, headers)
+            return redirect('discussions')
+        except requests.RequestException as e:
+            return JsonResponse({'error': 'Failed to delete discussion. Please try again later.'}, status=500)
+
+    # For GET requests, render a confirmation page
+    discussion = getDiscussionByID_model(id)
+    authen = getAuthen(request)
+    return render(request, 'pages/discussions/discussion_remove_confirm.html', {
+        'discussion': discussion,
+        'authen': authen
+    })
