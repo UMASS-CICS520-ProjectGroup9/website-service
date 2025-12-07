@@ -18,7 +18,8 @@ import requests
 
 
 def discussion_list(request):
-    discussions = discussionAPI() or []
+    token = request.session.get('access_token')
+    discussions = discussionAPI(token=token) or []
     # Paginate discussions: 10 per page
     page_number = request.GET.get('page', 1)
     paginator = Paginator(discussions, 10)
@@ -33,8 +34,9 @@ def discussion_list(request):
 
 
 def discussion_detail(request, pk):
-    discussion = getDiscussionByID_model(pk)
-    comments = getCommentsByDiscussion_model(pk)
+    token = request.session.get('access_token')
+    discussion = getDiscussionByID_model(pk, token=token)
+    comments = getCommentsByDiscussion_model(pk, token=token)
     context = {
         'discussion': discussion,
         'comments': comments,
@@ -63,7 +65,8 @@ def discussion_create(request):
             if authen.get('user_id'):
                 payload['creator_id'] = authen.get('user_id')
             try:
-                createDiscussion_model(payload)
+                token = request.session.get('access_token')
+                createDiscussion_model(payload, token=token)
                 # Successful create
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'ok': True}, status=201)
@@ -100,7 +103,8 @@ def comment_create(request, pk):
             try:
                 # Import locally to avoid circular import risks
                 from .models import createComment_model
-                createComment_model(payload)
+                token = request.session.get('access_token')
+                createComment_model(payload, token=token)
             except Exception:
                 # swallow errors for now; could add messages
                 pass
@@ -157,13 +161,15 @@ def removeDiscussion(request, id):
                 "X-User-ID": str(request.session.get('user_id') or '')
         }
         try:
+            # removeDiscussion_model expects headers; pass Authorization header built from session token
             removeDiscussion_model(id, headers)
             return redirect('discussions')
         except requests.RequestException as e:
             return JsonResponse({'error': 'Failed to delete discussion. Please try again later.'}, status=500)
 
     # For GET requests, render a confirmation page
-    discussion = getDiscussionByID_model(id)
+    token = request.session.get('access_token')
+    discussion = getDiscussionByID_model(id, token=token)
     authen = getAuthen(request)
     return render(request, 'pages/discussions/discussion_remove_confirm.html', {
         'discussion': discussion,

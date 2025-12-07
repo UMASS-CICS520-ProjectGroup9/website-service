@@ -9,20 +9,32 @@ COURSE_DISCUSSION_API_BASE_URL = f"{settings.COURSE_DISCUSSION_API_BASE_URL}"
 COURSE_COMMENT_API_BASE_URL = f"{settings.COURSE_COMMENTS_API_BASE_URL}"
 
 # Get all discussions
-def discussionAPI():
-    response = requests.get(DISCUSSIONS_API_BASE_URL)
+def discussionAPI(token=None):
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    print(f"[DEBUG] discussionAPI headers: {headers}")
+    response = requests.get(DISCUSSIONS_API_BASE_URL, headers=headers)
     response.raise_for_status()
     return response.json()
 
 # Get a single discussion by ID
-def getDiscussionByID_model(id):
-    response = requests.get(f"{DISCUSSIONS_API_BASE_URL}{id}/")
+def getDiscussionByID_model(id, token=None):
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    print(f"[DEBUG] getDiscussionByID_model headers: {headers}")
+    response = requests.get(f"{DISCUSSIONS_API_BASE_URL}{id}/", headers=headers)
     response.raise_for_status()
     return response.json()
 
 # Create a new discussion
-def createDiscussion_model(discussion_data):
-    response = requests.post(DISCUSSIONS_API_BASE_URL, json=discussion_data)
+def createDiscussion_model(discussion_data, token=None):
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    print(f"[DEBUG] createDiscussion_model headers: {headers}")
+    response = requests.post(DISCUSSIONS_API_BASE_URL, json=discussion_data, headers=headers)
     response.raise_for_status()
     return response.json()
 
@@ -31,28 +43,38 @@ def removeDiscussion_model(id, headers=None):
     """Delete a discussion by ID.
     Optionally pass headers (e.g., Authorization) for protected endpoints.
     """
+    print(f"[DEBUG] removeDiscussion_model headers: {headers or {}}")
     response = requests.delete(f"{DISCUSSIONS_API_BASE_URL}{id}/", headers=headers or {})
     response.raise_for_status()
     return {"status": "success", "message": f"Discussion {id} removed."}
 
 
 # Get comments for a given discussion ID
-def getCommentsByDiscussion_model(discussion_id):
+def getCommentsByDiscussion_model(discussion_id, token=None):
     params = {"discussion": discussion_id}
-    response = requests.get(COMMENT_API_BASE_URL, params=params)
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    print(f"[DEBUG] getCommentsByDiscussion_model headers: {headers}, params: {params}")
+    response = requests.get(COMMENT_API_BASE_URL, params=params, headers=headers)
     response.raise_for_status()
     return response.json()
 
 
 # Create a new comment for a given discussion
-def createComment_model(comment_data):
+def createComment_model(comment_data, token=None):
     """comment_data should be a dict with keys: discussion (id), author, body"""
-    response = requests.post(COMMENT_API_BASE_URL, json=comment_data)
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    print(f"[DEBUG] createComment_model headers: {headers}")
+    response = requests.post(COMMENT_API_BASE_URL, json=comment_data, headers=headers)
     response.raise_for_status()
     return response.json()
 
 def removeComment_model(id, headers=None):
     """Delete a comment by ID. Headers may include Authorization and X-User-ID."""
+    print(f"[DEBUG] removeComment_model headers: {headers or {}}")
     response = requests.delete(f"{COMMENT_API_BASE_URL}{id}/", headers=headers or {})
     response.raise_for_status()
     return {"status": "success", "message": f"Comment {id} removed."}

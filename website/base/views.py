@@ -24,7 +24,8 @@ def getAuthen(request):
     }
 
 def index(request):
-    discussion_data = discussionAPI()
+    token = request.session.get('access_token')
+    discussion_data = discussionAPI(token=token)
     if discussion_data:
         discussion_data = sorted(discussion_data, key=lambda x: x['updated_at'], reverse=True)
     
