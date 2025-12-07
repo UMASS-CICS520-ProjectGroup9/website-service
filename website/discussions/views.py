@@ -108,7 +108,8 @@ def comment_create(request, pk):
 
 def course_discussion_detail(request, course_subject, course_id):
     discussion = get_course_discussion_model(course_subject, course_id)
-    comments = get_course_comments_model(course_subject, course_id)
+    token = request.session.get("access_token")
+    comments = get_course_comments_model(course_subject, course_id, token=token)
 
     context = {
         'discussion': discussion,
