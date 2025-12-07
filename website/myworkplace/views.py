@@ -1,6 +1,12 @@
 from django.shortcuts import render, redirect
 import requests
 from .models import posts
+from django.conf import settings
+
+PROFESSORS_API_BASE_URL = settings.PROFESSORS_API_BASE_URL
+COURSES_API_BASE_URL = settings.COURSES_API_BASE_URL
+DISCUSSIONS_API_BASE_URL = settings.DISCUSSIONS_API_BASE_URL
+COMMENTS_API_BASE_URL = settings.COMMENTS_API_BASE_URL
 
 def getAuthen(request):
     return  {
@@ -37,11 +43,11 @@ def myworkplace(request):
     else:
         res_admin_events = requests.get("http://127.0.0.1:9002/api/events/")
         event_data = res_admin_events.json()
-        res_admin_discussions = requests.get("http://127.0.0.1:8000/api/discussions/")
+        res_admin_discussions = requests.get(DISCUSSIONS_API_BASE_URL)
         discussion_data = res_admin_discussions.json()
-        res_admin_comments = requests.get("http://127.0.0.1:8000/api/comments/")
+        res_admin_comments = requests.get(COMMENTS_API_BASE_URL)
         comments_data = res_admin_comments.json()
-        res_admin_courses = requests.get("http://127.0.0.1:9005/api/courses/")
+        res_admin_courses = requests.get(COURSES_API_BASE_URL)
         courses_data = res_admin_courses.json()
         #res_admin_professors = requests.get("http://127.0.0.1:8000/api/professors/")
         #professors_data = res_admin_professors.json()
