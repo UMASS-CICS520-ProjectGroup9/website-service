@@ -132,7 +132,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 COURSES_API_BASE_URL = "http://127.0.0.1:9004/api/courses/"
-PROFESSORS_API_BASE_URL = "http://127.0.0.1:9003/api/professors/"
+# PROFESSORS_API_BASE_URL = "http://127.0.0.1:9003/api/professors/"
+PROFESSORS_API_BASE_URL = "https://georgesweb.pythonanywhere.com/api/professors/"
 DISCUSSIONS_API_BASE_URL = "http://127.0.0.1:9005/api/discussions/"
 COMMENTS_API_BASE_URL = "http://127.0.0.1:9005/api/comments/"
 EVENTS_API_BASE_URL = "https://ping4learn1.pythonanywhere.com"
