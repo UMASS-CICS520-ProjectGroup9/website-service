@@ -1,4 +1,3 @@
-
 import requests
 from django.conf import settings
 
@@ -62,6 +61,17 @@ def delete_professor_api(pk, token=None):
         headers['Authorization'] = f"Bearer {token}"
     try:
         url = f"{PROFESSORS_API_BASE_URL}{pk}/delete/"
+        response = requests.delete(url, headers=headers)
+        return response.status_code == 204
+    except requests.exceptions.RequestException:
+        return False
+
+def delete_review_api(pk, token=None):
+    headers = {}
+    if token:
+        headers['Authorization'] = f"Bearer {token}"
+    try:
+        url = f"{PROFESSORS_API_BASE_URL}review/{pk}/delete/"
         response = requests.delete(url, headers=headers)
         return response.status_code == 204
     except requests.exceptions.RequestException:

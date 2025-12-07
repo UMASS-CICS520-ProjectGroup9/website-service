@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import get_professors_api, get_professor_api, create_review_api, create_professor_api, delete_professor_api
+from .models import get_professors_api, get_professor_api, create_review_api, create_professor_api, delete_professor_api, delete_review_api
 
 def professors(request):
     query = request.GET.get('query', '')
@@ -49,4 +49,14 @@ def delete_professor(request, pk):
     if request.method == 'POST':
         token = request.session.get("access_token")
         delete_professor_api(pk, token=token)
+    return redirect('professors')
+
+def delete_review(request, pk):
+    token = request.session.get("access_token")
+    # Call the API to delete the review
+    delete_review_api(pk, token=token)
+    # Redirect back to the referring page or professors list
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        return redirect(referer)
     return redirect('professors')
