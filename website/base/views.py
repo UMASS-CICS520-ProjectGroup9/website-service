@@ -8,7 +8,10 @@ from dateutil import parser
 from django.utils import timezone
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.conf import settings
 import math
+
+USERAUTH_API_BASE_URL = settings.USERAUTH_API_BASE_URL # Replace with actual API URL
 
 # Create your views here.
 
@@ -82,8 +85,6 @@ def events_page(request, page):
 def register(request):
     return render(request, 'pages/authentication/register.html')
 
-USERAUTH_URL = "http://127.0.0.1:9111"   # your user auth service
-
 @require_http_methods(["GET", "POST"])
 def registerCreate(request): 
     """
@@ -110,7 +111,7 @@ def registerCreate(request):
         }
         print("37-data:", data)
         # # Send to UserAuth API
-        res = requests.post(f"{USERAUTH_URL}/api/register/", json=data)
+        res = requests.post(f"{USERAUTH_API_BASE_URL}/api/register/", json=data)
         print("44-data:", res.json())
         if res.status_code == 201 or res.status_code == 200:
             return redirect("login")
@@ -137,7 +138,7 @@ def loginProcess(request):
         }
         print("68-data: ", data)
         # Call login API
-        res = requests.post(f"{USERAUTH_URL}/api/token/", json=data)
+        res = requests.post(f"{USERAUTH_API_BASE_URL}/api/token/", json=data)
         print("71-res.json(): ", res.json())
         if res.status_code == 200:
             tokens = res.json()
