@@ -47,13 +47,18 @@ def discussion_create(request):
     Expects POST keys: 'author', 'title', 'body'. Redirects to the list view on success.
     """
     if request.method == 'POST':
-        author = request.POST.get('author', '').strip()
+        form_author = request.POST.get('author', '').strip()
         title = request.POST.get('title', '').strip()
         body = request.POST.get('body', '').strip()
+        authen = getAuthen(request)
+        # prefer logged-in user's email/name when available
+        author = authen.get('user_email') or form_author or 'Anonymous'
 
         # Minimal validation
         if title and body:
-            payload = {'author': author or 'Anonymous', 'title': title, 'body': body}
+            payload = {'author': author, 'title': title, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 createDiscussion_model(payload)
                 # Successful create
@@ -81,10 +86,14 @@ def comment_create(request, pk):
     Expects POST keys: 'author', 'body'. Redirects back to discussion detail.
     """
     if request.method == 'POST':
-        author = request.POST.get('author', '').strip() or 'Anonymous'
+        form_author = request.POST.get('author', '').strip()
         body = request.POST.get('body', '').strip()
+        authen = getAuthen(request)
+        author = authen.get('user_email') or form_author or 'Anonymous'
         if body:
             payload = {'discussion': pk, 'author': author, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 # Import locally to avoid circular import risks
                 from .models import createComment_model
@@ -117,7 +126,10 @@ def course_comment_create(request, course_subject, course_id):
         discussion_id = request.POST.get('discussion_id')
 
         if body and discussion_id:
+            authen = getAuthen(request)
             payload = {'discussion': discussion_id, 'author': author, 'body': body}
+            if authen.get('user_id'):
+                payload['creator_id'] = authen.get('user_id')
             try:
                 create_course_comment_model(payload)
             except Exception:

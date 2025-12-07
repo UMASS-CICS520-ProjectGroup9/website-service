@@ -9,9 +9,12 @@
             <div class="row gtr-uniform">
                 <!-- Author & Title-->
                 <div class="col-6 col-12-xsmall">
-                    <input type="text" name="author" id="id_author" value="" placeholder="Your name" required />
+
+                    <input type="hidden" name="author" id="id_author" value="{{ authen.user_id }}"
+                        placeholder="Your name" readonly required />
+
                 </div>
-                <div class="col-6 col-12-xsmall">
+                <div class="col-12 col-12-xsmall">
                     <input type="text" name="title" id="id_title" value="" placeholder="Discussion title" required />
                 </div>
 
