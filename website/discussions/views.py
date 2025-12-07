@@ -1,3 +1,5 @@
+
+
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator
@@ -107,8 +109,8 @@ def comment_create(request, pk):
 
 
 def course_discussion_detail(request, course_subject, course_id):
-    discussion = get_course_discussion_model(course_subject, course_id)
     token = request.session.get("access_token")
+    discussion = get_course_discussion_model(course_subject, course_id, token=token)
     comments = get_course_comments_model(course_subject, course_id, token=token)
 
     context = {
@@ -116,6 +118,8 @@ def course_discussion_detail(request, course_subject, course_id):
         'comments': comments,
         'course_subject': course_subject,
         'course_id': course_id,
+        'user_id': request.session.get('user_id'),
+        'role': request.session.get('role'),
     }
     return render(request, 'pages/courses/course_discussion_detail.html', context)
 
@@ -132,8 +136,9 @@ def course_comment_create(request, course_subject, course_id):
             payload = {'discussion': discussion_id, 'author': author, 'body': body}
             if authen.get('user_id'):
                 payload['creator_id'] = authen.get('user_id')
+            token = request.session.get("access_token")
             try:
-                create_course_comment_model(payload)
+                create_course_comment_model(payload, token=token)
             except Exception:
                 # swallow errors for now; could add messages
                 pass
@@ -195,5 +200,34 @@ def removeComment(request, id):
     authen = getAuthen(request)
     return render(request, 'pages/discussions/comment_remove_confirm.html', {
         'comment_id': id,
+        'authen': authen
+    })
+
+def remove_course_comment(request, id, course_subject, course_id):
+    """
+    Handle course comment deletion by ID via the discussions-service API.
+    GET: Show confirmation; POST: perform deletion.
+    Redirects back to the course discussion detail page.
+    """
+    if request.method == 'POST':
+        headers = {
+            "Authorization": f"Bearer {request.session.get('access_token')}",
+            "Content-Type": "application/json",
+            "X-User-ID": str(request.session.get('user_id') or '')
+        }
+        try:
+            from .models import remove_course_comment_model
+            remove_course_comment_model(id, headers)
+        except requests.RequestException:
+            return JsonResponse({'error': 'Failed to delete course comment.'}, status=500)
+
+        return redirect('course_discussion_detail', course_subject=course_subject, course_id=course_id)
+
+    # GET: render a simple confirmation (optional: include hidden discussion_id if passed as query)
+    authen = getAuthen(request)
+    return render(request, 'pages/courses/course_comment_remove_confirm.html', {
+        'comment_id': id,
+        'course_subject': course_subject,
+        'course_id': course_id,
         'authen': authen
     })

@@ -1,10 +1,11 @@
+
 import requests
 from django.conf import settings
 
 # NOTE: Ensure this port matches your discussions-service runserver port (DRF UI shows 8000 in your screenshots)
 DISCUSSIONS_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}"
 COMMENT_API_BASE_URL = f"{settings.COMMENTS_API_BASE_URL}"
-COURSE_DISCUSSION_API_BASE_URL = f"{settings.DISCUSSIONS_API_BASE_URL}course-discussions/"
+COURSE_DISCUSSION_API_BASE_URL = f"{settings.COURSE_DISCUSSION_API_BASE_URL}"
 COURSE_COMMENT_API_BASE_URL = f"{settings.COURSE_COMMENTS_API_BASE_URL}"
 
 # Get all discussions
@@ -58,8 +59,13 @@ def removeComment_model(id, headers=None):
 
 
 # Get a course discussion by subject and ID
-def get_course_discussion_model(course_subject, course_id):
-    response = requests.get(f"{COURSE_DISCUSSION_API_BASE_URL}{course_subject}/{course_id}/")
+def get_course_discussion_model(course_subject, course_id, token=None):
+    url = f"{COURSE_DISCUSSION_API_BASE_URL}{course_subject}/{course_id}/"
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    response = requests.get(url, headers=headers)
+    print(f"[DEBUG] GET {url} -> status {response.status_code}, response: {response.text}")
     if response.status_code == 404:
         return None
     response.raise_for_status()
@@ -77,8 +83,17 @@ def get_course_comments_model(course_subject, course_id, token=None):
     return response.json()
 
 
-def create_course_comment_model(comment_data):
+def create_course_comment_model(comment_data, token=None):
     """comment_data should be a dict with keys: discussion (id), author, body"""
-    response = requests.post(COURSE_COMMENT_API_BASE_URL, json=comment_data)
+    headers = {}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    response = requests.post(COURSE_COMMENT_API_BASE_URL, json=comment_data, headers=headers)
     response.raise_for_status()
     return response.json()
+
+def remove_course_comment_model(id, headers=None):
+    """Delete a course comment by ID. Headers may include Authorization and X-User-ID."""
+    response = requests.delete(f"{COURSE_COMMENT_API_BASE_URL}{id}/", headers=headers or {})
+    response.raise_for_status()
+    return {"status": "success", "message": f"CourseComment {id} removed."}
