@@ -9,7 +9,13 @@ def courses(request):
     """
     token = request.session.get("access_token")
     courses = courseAPI(token=token)
-    return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': False})
+    authen = {
+        "is_login": "access_token" in request.session,
+        "user_email": request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
+    return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': False, 'authen': authen})
 
 
 def get_courses_from_api(courseSubject='', courseID='', title='', instructor='', token=None):
@@ -33,7 +39,13 @@ def course_search(request):
     
     token = request.session.get("access_token")
     courses = get_courses_from_api(courseSubject, courseID, title, instructor, token=token)
-    return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': True})
+    authen = {
+        "is_login": "access_token" in request.session,
+        "user_email": request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
+    return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': True, 'authen': authen})
 
 def delete_course(request, courseSubject, courseID):
     """
@@ -42,7 +54,12 @@ def delete_course(request, courseSubject, courseID):
     role = request.session.get("role")
     if role not in ['ADMIN', 'STAFF']:
         return redirect('courses')
-
+    authen = {
+        "is_login": "access_token" in request.session,
+        "user_email": request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
     if request.method == 'POST':
         token = request.session.get("access_token")
         delete_course_api(courseSubject, courseID, token=token)
@@ -55,7 +72,12 @@ def add_course(request):
     role = request.session.get("role")
     if role not in ['ADMIN', 'STAFF']:
         return redirect('courses')
-
+    authen = {
+        "is_login": "access_token" in request.session,
+        "user_email": request.session.get("email"),
+        "role": request.session.get("role"),
+        "user_id": request.session.get("user_id")
+    }
     if request.method == 'POST':
         data = {
             'courseSubject': request.POST.get('courseSubject'),
@@ -75,5 +97,4 @@ def add_course(request):
         else:
             # Handle error (maybe pass an error message to the template)
             pass
-            
-    return render(request, 'pages/courses/add_course.html')
+    return render(request, 'pages/courses/add_course.html', {'authen': authen})
