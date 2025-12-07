@@ -20,6 +20,13 @@
     <div style="font-size: 1.35rem; line-height: 2.1; color: #222; margin-bottom: 2.5rem;">
         {{ discussion.body }}
     </div>
+    {% if authen.is_login and authen.user_id and discussion.creator_id and authen.user_id == discussion.creator_id %}
+    <div style="margin: 1rem 0 2rem 0;">
+        <a href="/discussions/remove/{{ discussion.id }}/"
+            style="background:#e74c3c; color:#fff; padding:0.6rem 1rem; border-radius:4px; text-decoration:none;">Delete
+            Discussion</a>
+    </div>
+    {% endif %}
     <hr style="margin: 2.5rem 0; border: none; border-top: 1px solid #eee;" />
     <section>
         <h3 style="font-size:1.8rem; margin-bottom:1.2rem; font-weight:700;">Comments ({{ comments|length }})</h3>
@@ -31,6 +38,12 @@
                     <strong>{{ c.author }}</strong>
                     <span style="color:#bbb">&middot;</span>
                     <span>{{ c.created_at_display|default:'Just now' }}</span>
+                    {% if authen.is_login and authen.user_id and c.creator_id and authen.user_id == c.creator_id %}
+                    <span style="margin-left:0.75rem;">
+                        <a href="/discussions/comment/remove/{{ c.id }}/"
+                            style="color:#e74c3c; text-decoration:none;">Delete</a>
+                    </span>
+                    {% endif %}
                 </div>
                 <div style="font-size:1.05rem; line-height:1.55;">{{ c.body }}</div>
             </li>
@@ -46,8 +59,10 @@
         <form method="post" action="{% url 'discussion_comment_create' discussion.id %}">
             {% csrf_token %}
             <div style="display:flex; gap:1rem; align-items:flex-start; margin-bottom:1rem;">
-                <input name="author" placeholder="Your name"
+                {% if authen.is_login %}
+                <input name="author" type="hidden" value="{{ authen.user_id }}" readonly
                     style="flex:0 0 200px; padding:0.8rem; border:1px solid #e5e5e5; border-radius:4px;" />
+                {% endif %}
                 <textarea name="body" placeholder="Write your comment..." rows="1"
                     style="flex:1; padding:0.8rem; border:1px solid #e5e5e5; border-radius:4px;"></textarea>
                 <button type="submit"
