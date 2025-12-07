@@ -1,8 +1,9 @@
 {% load static %}
 <!-- table1 -->
 
-{% if authen.role == 'ADMIN' %}
-  <article class="post">
+<article class="post">
+  {{courses}}
+  {% if authen.role == 'ADMIN' %}
     <section>
       <h3>My Courses Lists</h3>
       {% if courses %}
@@ -49,7 +50,41 @@
         <p>No courses found.</p>
       {% endif %}
     </section>
-  </article>
-{% elif authen.role == 'STUDENT' %}
-<p>i am student</p>
-{% endif %}
+    <hr style="border-top: 1px dashed rgba(160,160,160,0.3); margin: 2em 0;" />
+  {% endif %}
+  <section>
+    <h3>My Courses Reviews Lists</h3>
+    {% if coursesReviews %}
+      <p>
+        Showing {{ coursesReviews|length }} courses reviews{% if coursesReviews|length != 1 %}s{% endif %}.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Professor Name</th>
+              <th>Comment</th>
+              <th>Rating</th>
+              <th>Author</th>
+              <th>Create Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for professorsReview in professorsReviews %}
+              <tr>
+                <td>{{ professorsReview.professor_name }}</td>
+                <td>{{ professorsReview.comment }}</td>
+                <td>{{ professorsReview.rating }}</td>
+                <td>{{ professorsReview.author }}</td>
+                <td>{{ professorsReview.created_at }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No professors reviews found.</p>
+    {% endif %}
+  </section>
+</article>

@@ -18,7 +18,6 @@ def getAuthen(request):
     }
 
 def getProfessorsReviews(professors_data, authen):
-    print(professors_data)
     all_reviews_list = []
 
     for professor in professors_data:
@@ -42,6 +41,25 @@ def getProfessorsReviews(professors_data, authen):
             
     return all_reviews_list
 
+def filter_user_activities(discussion_data, authen):
+    user_id = authen.get('user_id')
+    my_discussions = []
+    my_comments = []
+
+    for discussion in discussion_data:
+        if discussion.get('creator_id') == user_id:
+            my_discussions.append(discussion)
+
+        comments = discussion.get('comments', [])
+        for comment in comments:
+            if comment.get('creator_id') == user_id:
+                if 'discussion_title' not in comment:
+                    comment['discussion_title'] = discussion.get('title')
+
+                my_comments.append(comment)
+
+    return my_discussions, my_comments
+
 def myworkplace(request):
     is_login = "access_token" in request.session
     if not is_login:
@@ -59,31 +77,26 @@ def myworkplace(request):
                 "Content-Type": "application/json"
             }
     
-    res_admin_professors = requests.get(f"{PROFESSORS_API_BASE_URL}", headers=headers)
-    professors_data = res_admin_professors.json()
+    res_admin_discussions = requests.get(DISCUSSIONS_API_BASE_URL)
+    discussion_data, comments_data = filter_user_activities(res_admin_discussions.json(), authen)
+    
+    res_professors = requests.get(f"{PROFESSORS_API_BASE_URL}", headers=headers)
+    professors_data = res_professors.json()
     professors_reviews_data = getProfessorsReviews(professors_data, authen)
+    
+    res_courses = requests.get(f"{COURSES_API_BASE_URL}", headers=headers)
+    courses_data = res_courses.json()
+    #professors_reviews_data = getProfessorsReviews(professors_data, authen)
 
     if authen.get('role') != "ADMIN":    
         res_student_events = requests.get(f"{EVENTS_API_BASE_URL}/api/events/{authen.get('user_id')}/creator_id/", headers=headers)
         event_data = res_student_events.json()
-        #res_student_discussions = requests.get(f"DISCUSSIONS_API_BASE_URL/{authen.get('user_id')}/creator_id/", headers=headers)
-        #discussion_data = res_student_discussions.json()
-        discussion_data = []
-        comments_data = []
         courses_data = []
         professors_data = []
         
     else:
         res_admin_events = requests.get(f"{EVENTS_API_BASE_URL}/api/events/")
         event_data = res_admin_events.json()
-        #res_admin_discussions = requests.get(DISCUSSIONS_API_BASE_URL)
-        #discussion_data = res_admin_discussions.json()
-        discussion_data = []
-        #res_admin_comments = requests.get(COMMENTS_API_BASE_URL)
-        #comments_data = res_admin_comments.json()
-        comments_data = []
-        res_admin_courses = requests.get(COURSES_API_BASE_URL)
-        courses_data = res_admin_courses.json()
 
     context = {
         'events': event_data,
