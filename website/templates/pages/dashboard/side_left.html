@@ -12,28 +12,30 @@
   </section>
 
   <!-- Mini Posts -->
-<section>
-    <div class="mini-posts">
+  {% if request.session.role == 'ADMIN' or request.session.role == 'STUDENT' %}
+    <section>
+      <div class="mini-posts">
         <h3>Top Courses</h3>
-        
+
         {% if courses %}
-            {% for course in courses %}
-                {% include './box_mini.html' %} 
-            {% endfor %}
+          {% for course in courses %}
+            {% include './box_mini.html' %}
+          {% endfor %}
         {% else %}
-            <p>No courses available.</p>
+          <p>No courses available.</p>
         {% endif %}
 
         <ul class="actions">
-      <li>
-        <a href="{% url 'courses' %} " class="button">Learn More</a>
-      </li>
-    </ul>
-    </div>
-</section>
+          <li>
+            <a href="{% url 'courses' %} " class="button">Learn More</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  {% endif %}
 
   <!-- Posts List -->
-  <!--     <section>
+  <!--        <section>
                     <ul class="posts">
                         <h3>Top Professors</h3>
                         {% for post in posts %}
@@ -43,17 +45,18 @@
                        
                     </ul>
                 </section>
-             -->
+                -->
 
   <!-- About -->
   <section class="blurb">
     <h2>About</h2>
-    <p>Mauris neque quam, fermentum ut nisl vitae, convallis maximus nisl. Sed mattis nunc id lorem euismod amet placerat. Vivamus porttitor magna enim, ac accumsan tortor cursus at phasellus sed ultricies.</p>
-    <ul class="actions">
+    <p>Ultimate Map for Academic Strategy & Success (UMASS) is a comprehensive web platform designed to help university students thrive academically and prepare for their future careers. Students search for information which comes from the office or students may share resources, access course information, evaluate professors, collaborate with peers, and strategize their academic journey.</p>
+    <!--  <ul class="actions">
       <li>
         <a href="#" class="button">Learn More</a>
       </li>
     </ul>
+    -->
   </section>
 
   {% include '../../base_components/footer.html' %}
