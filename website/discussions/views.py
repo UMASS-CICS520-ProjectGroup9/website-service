@@ -158,7 +158,8 @@ def removeDiscussion(request, id):
         headers = {
             "Authorization": f"Bearer {request.session.get('access_token')}",
                 "Content-Type": "application/json",
-                "X-User-ID": str(request.session.get('user_id') or '')
+                "X-User-ID": str(request.session.get('user_id') or ''),
+                "X-User-Role": str(request.session.get('role') or '')
         }
         try:
             # removeDiscussion_model expects headers; pass Authorization header built from session token
@@ -186,7 +187,8 @@ def removeComment(request, id):
         headers = {
             "Authorization": f"Bearer {request.session.get('access_token')}",
             "Content-Type": "application/json",
-            "X-User-ID": str(request.session.get('user_id') or '')
+            "X-User-ID": str(request.session.get('user_id') or ''),
+            "X-User-Role": str(request.session.get('role') or '')
         }
         try:
             from .models import removeComment_model
@@ -219,7 +221,8 @@ def remove_course_comment(request, id, course_subject, course_id):
         headers = {
             "Authorization": f"Bearer {request.session.get('access_token')}",
             "Content-Type": "application/json",
-            "X-User-ID": str(request.session.get('user_id') or '')
+            "X-User-ID": str(request.session.get('user_id') or ''),
+            "X-User-Role": str(request.session.get('role') or '')
         }
         try:
             from .models import remove_course_comment_model
