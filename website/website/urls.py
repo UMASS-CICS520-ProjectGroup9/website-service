@@ -29,4 +29,5 @@ urlpatterns = [
     path('courses/', include('courses.urls')),
     path('professors/', include('professors.urls')),
     path("events/page/<int:page>/", views.events_page, name="events_page"),
+    path("dashboard-discussions/page/<int:page>/", views.discussions_page, name="discussions_page"),
 ]

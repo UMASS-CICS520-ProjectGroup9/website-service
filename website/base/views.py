@@ -24,16 +24,11 @@ def getAuthen(request):
     }
 
 def index(request):
-    token = request.session.get('access_token')
-    discussion_data = discussionAPI(token=token)
-    if discussion_data:
-        discussion_data = sorted(discussion_data, key=lambda x: x['updated_at'], reverse=True)
-    
     token = request.session.get("access_token")
     print(f"DEBUG: Index view - Token present: {bool(token)}")
     if token:
         print(f"DEBUG: Token: {token[:10]}...")
-
+    
     course_data = courseAPI(token=token)
     if course_data:
         course_data = course_data[:3]
@@ -41,12 +36,44 @@ def index(request):
     authen = getAuthen(request)
 
     context = {
-        'discussions': discussion_data,
         'authen': authen,
         'courses': course_data
     }
     
     return render(request, 'index.html', context)
+
+def discussions_page(request, page):
+    token = request.session.get("access_token")
+
+    discussions = []
+    if token:
+        try:
+            discussions = discussionAPI(token=token)
+            
+            if discussions:
+                discussions = sorted(discussions, key=lambda x: x["updated_at"], reverse=True)
+        except Exception as e:
+            print(f"DEBUG: Failed to fetch discussions: {e}")
+            discussions = []
+
+    per_page = 5
+    total_pages = math.ceil(len(discussions) / per_page) if discussions else 1
+
+    start = (page - 1) * per_page
+    end = start + per_page
+
+    page_data = discussions[start:end]
+
+    html = render_to_string(
+        "pages/dashboard/discussion_list_fragment.html",
+        {
+            "discussions": page_data,
+            "current_page": page,
+            "total_pages": total_pages,
+        }
+    )
+
+    return HttpResponse(html)
 
 def events_page(request, page):
     today = timezone.localdate()
@@ -66,7 +93,7 @@ def events_page(request, page):
             e["event_end_date"] = parser.parse(e["event_end_date"])
 
     # For change pages
-    per_page = 5
+    per_page = 3
     total_pages = math.ceil(len(events_today) / per_page)
 
     # slice page data
@@ -75,7 +102,7 @@ def events_page(request, page):
     page_events = events_today[start:end]
 
     # render partial fragment
-    html = render_to_string("components/event_list_fragment.html", {
+    html = render_to_string("pages/dashboard/event_list_fragment.html", {
         "events": page_events,
         "current_page": page,
         "total_pages": total_pages,

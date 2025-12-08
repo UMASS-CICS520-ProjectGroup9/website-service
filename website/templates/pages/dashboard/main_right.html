@@ -1,6 +1,9 @@
 {% load static %}
 <!-- Main -->
 <div id="main">
+  <!-- Scroll target for pagination -->
+  <div id="events-section"></div>
+
   <!-- Post -->
   <article class="post">
     <header>
@@ -19,19 +22,29 @@
     </div>
   </article>
 
-  <article class="post">
-    <header>
-      <div class="title">
-        <h2><a href="events">Discussion & Topics</a></h2>
-        <p>Recent Updates Discussions and Topics by Students</p>
+  {% if request.session.role == 'ADMIN' or request.session.role == 'STUDENT' %}
+    <!-- Scroll target for discussion pagination -->
+    <div id="discussions-section"></div>
+    
+    <article class="post">
+      <header>
+        <div class="title">
+          <h2><a href="discussions">Discussion & Topics</a></h2>
+          <p>Recent Updates Discussions and Topics by Students</p>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- HTMX will load table here -->
+        <div id="discussion-container" hx-get="/dashboard-discussions/page/1/" hx-trigger="load" hx-target="#discussion-container" hx-swap="innerHTML"></div>
       </div>
-    </header>
 
-    {% include '../discussions/discussion_list.html' %}
-
-    <!-- Load the box component -->
-    {# {% include './box.html' %} #}
-  </article>
+      <div id="discussion-pagination" style="text-align:center; margin-top:20px;">
+        <button id="d-prev-btn" disabled>Previous</button>
+        <button id="d-next-btn">Next</button>
+      </div>
+    </article>
+  {% endif %}
 
   <!-- Pagination -->
   {# {% include '../../components/pagination.html' %} #}
@@ -41,16 +54,111 @@
 </div>
 
 <script>
+  function updateDiscussionButtons() {
+    const info = document.querySelector('#discussion-page-info')
+    const pagination = document.getElementById('discussion-pagination')
+  
+    if (!info) {
+      pagination.style.display = 'none'
+      return
+    }
+  
+    let current = parseInt(info.dataset.currentPage)
+    let total = parseInt(info.dataset.totalPages)
+  
+    // hide pagination completely if no need
+    if (total <= 1) {
+      pagination.style.display = 'none'
+    } else {
+      pagination.style.display = 'block'
+    }
+  
+    // update buttons
+    document.getElementById('d-prev-btn').disabled = current <= 1
+    document.getElementById('d-next-btn').disabled = current >= total
+  }
+  
+  document.body.addEventListener('htmx:afterSwap', function (event) {
+    if (event.detail.target.id === 'discussion-container') {
+      updateDiscussionButtons()
+    }
+  })
+  
+  // NEXT
+  document.getElementById('d-next-btn').addEventListener('click', function () {
+    const info = document.querySelector('#discussion-page-info')
+    let current = parseInt(info.dataset.currentPage)
+    let total = parseInt(info.dataset.totalPages)
+  
+    if (current < total) {
+      htmx.ajax('GET', `/dashboard-discussions/page/${current + 1}/`, '#discussion-container').then(() => {
+        updateDiscussionButtons()
+        scrollToDiscussions()
+      })
+    }
+  })
+  
+  // PREVIOUS
+  document.getElementById('d-prev-btn').addEventListener('click', function () {
+    const info = document.querySelector('#discussion-page-info')
+    let current = parseInt(info.dataset.currentPage)
+  
+    if (current > 1) {
+      htmx.ajax('GET', `/dashboard-discussions/page/${current - 1}/`, '#discussion-container').then(() => {
+        updateDiscussionButtons()
+        scrollToDiscussions()
+      })
+    }
+  })
+  
+  // Scroll to discussions section header
+  function scrollToDiscussions() {
+    const discussionsSection = document.querySelector('#discussions-section')
+    if (discussionsSection) {
+      discussionsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+  
+  // Initial load
+  document.addEventListener('DOMContentLoaded', updateDiscussionButtons)
+  
   function updateEventPageButtons() {
     const info = document.querySelector('#event-page-info')
+    const pagination = document.getElementById('event-pagination')
   
-    if (!info) return
+    // 如果沒有 event-page-info 就代表沒有資料
+    if (!info) {
+      pagination.style.display = 'none'
+      return
+    }
   
     let currentPage = parseInt(info.dataset.currentPage)
     let totalPages = parseInt(info.dataset.totalPages)
   
+    // 若只有一頁 or 沒資料 → 隱藏整個 pagination
+    if (totalPages <= 1) {
+      pagination.style.display = 'none'
+    } else {
+      pagination.style.display = 'block'
+    }
+  
+    // 更新按鈕狀態
     document.getElementById('prev-btn').disabled = currentPage <= 1
     document.getElementById('next-btn').disabled = currentPage >= totalPages
+  }
+  
+  document.body.addEventListener('htmx:afterSwap', function (event) {
+    if (event.detail.target.id === 'event-container') {
+      updateEventPageButtons()
+    }
+  })
+  
+  // Scroll to events section header
+  function scrollToEvents() {
+    const eventsSection = document.querySelector('#events-section')
+    if (eventsSection) {
+      eventsSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
   
   // Next page
@@ -60,7 +168,10 @@
     let totalPages = parseInt(info.dataset.totalPages)
   
     if (currentPage < totalPages) {
-      htmx.ajax('GET', `/events/page/${currentPage + 1}/`, '#event-container').then(updateEventPageButtons)
+      htmx.ajax('GET', `/events/page/${currentPage + 1}/`, '#event-container').then(() => {
+        updateEventPageButtons()
+        scrollToEvents()
+      })
     }
   })
   
@@ -70,7 +181,10 @@
     let currentPage = parseInt(info.dataset.currentPage)
   
     if (currentPage > 1) {
-      htmx.ajax('GET', `/events/page/${currentPage - 1}/`, '#event-container').then(updateEventPageButtons)
+      htmx.ajax('GET', `/events/page/${currentPage - 1}/`, '#event-container').then(() => {
+        updateEventPageButtons()
+        scrollToEvents()
+      })
     }
   })
   

@@ -1,5 +1,5 @@
 {% for e in events %}
-    {% include "components/event_card.html" with e=e %}
+    {% include "pages/dashboard/event_card.html" with e=e %}
 {% empty %}
     <p>No events found.</p>
 {% endfor %}
