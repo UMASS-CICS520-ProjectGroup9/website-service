@@ -7,6 +7,8 @@ PROFESSORS_API_BASE_URL = settings.PROFESSORS_API_BASE_URL
 COURSES_API_BASE_URL = settings.COURSES_API_BASE_URL
 DISCUSSIONS_API_BASE_URL = settings.DISCUSSIONS_API_BASE_URL
 COMMENTS_API_BASE_URL = settings.COMMENTS_API_BASE_URL
+COURSE_DISCUSSION_API_BASE_URL = settings.COURSE_DISCUSSION_API_BASE_URL
+COURSE_COMMENTS_API_BASE_URL = settings.COURSE_COMMENTS_API_BASE_URL
 EVENTS_API_BASE_URL = settings.EVENTS_API_BASE_URL
 
 def getAuthen(request):
@@ -41,21 +43,51 @@ def getProfessorsReviews(professors_data, authen):
             
     return all_reviews_list
 
-def filter_user_activities(discussion_data, authen):
+def filter_user_discussions(discussion_data, authen):
     user_id = authen.get('user_id')
+    role = authen.get('role')
     my_discussions = []
     my_comments = []
 
     for discussion in discussion_data:
-        if discussion.get('creator_id') == user_id:
+        if role == 'ADMIN' or discussion.get('creator_id') == user_id:
             my_discussions.append(discussion)
 
         comments = discussion.get('comments', [])
         for comment in comments:
-            if comment.get('creator_id') == user_id:
-                if 'discussion_title' not in comment:
-                    comment['discussion_title'] = discussion.get('title')
+            if role == 'ADMIN' or comment.get('creator_id') == user_id:
+                my_comments.append(comment)
 
+    return my_discussions, my_comments
+
+def filter_course_discussions_and_comments(discussion_data, authen):
+    """
+    Filter course discussions and comments for the current user
+    """
+    user_id = authen.get('user_id')
+    role = authen.get('role')
+    my_discussions = []
+    my_comments = []
+
+    for discussion in discussion_data:
+        if role == 'ADMIN':
+            # Convert created_at to datetime object for template formatting
+            if isinstance(discussion.get("created_at"), str):
+                try:
+                    discussion["created_at"] = parser.parse(discussion["created_at"])
+                except:
+                    pass
+            my_discussions.append(discussion)
+
+        comments = discussion.get('comments', [])
+        for comment in comments:
+            if role == 'ADMIN' or comment.get('creator_id') == user_id:
+                # Convert created_at to datetime object for template formatting
+                if isinstance(comment.get("created_at"), str):
+                    try:
+                        comment["created_at"] = parser.parse(comment["created_at"])
+                    except:
+                        pass
                 my_comments.append(comment)
 
     return my_discussions, my_comments
@@ -69,6 +101,8 @@ def myworkplace(request):
     discussion_data = []
     comments_data = []
     courses_data = []
+    courses_discussion_data = []
+    courses_discussion_comments_data = []
     professors_data = []
     professors_reviews_data = []
 
@@ -77,8 +111,8 @@ def myworkplace(request):
                 "Content-Type": "application/json"
             }
     
-    res_admin_discussions = requests.get(DISCUSSIONS_API_BASE_URL)
-    discussion_data, comments_data = filter_user_activities(res_admin_discussions.json(), authen)
+    res_discussions = requests.get(DISCUSSIONS_API_BASE_URL)
+    discussion_data, comments_data = filter_user_discussions(res_discussions.json(), authen)
     
     res_professors = requests.get(f"{PROFESSORS_API_BASE_URL}", headers=headers)
     professors_data = res_professors.json()
@@ -86,7 +120,17 @@ def myworkplace(request):
     
     res_courses = requests.get(f"{COURSES_API_BASE_URL}", headers=headers)
     courses_data = res_courses.json()
-    #professors_reviews_data = getProfessorsReviews(professors_data, authen)
+
+    # Fetch all course discussions at once
+    try:
+        res_course_discussions = requests.get(COURSE_DISCUSSION_API_BASE_URL, headers=headers)
+        if res_course_discussions.status_code == 200:
+            all_course_discussions = res_course_discussions.json()
+            if isinstance(all_course_discussions, list):
+                # Filter by user ownership
+                courses_discussion_data, courses_discussion_comments_data = filter_course_discussions_and_comments(all_course_discussions, authen)
+    except Exception as e:
+        print(f"Error fetching course discussions: {e}")
 
     if authen.get('role') != "ADMIN":    
         res_student_events = requests.get(f"{EVENTS_API_BASE_URL}/api/events/{authen.get('user_id')}/creator_id/", headers=headers)
@@ -105,7 +149,9 @@ def myworkplace(request):
         'comments':comments_data,
         'courses':courses_data,
         'professors':professors_data,
-        'professorsReviews':professors_reviews_data
+        'professorsReviews':professors_reviews_data,
+        'coursesDiscussions':courses_discussion_data,
+        'coursesDiscussionComments':courses_discussion_comments_data
     }    
 
     return render(request, 'pages/myworkplace/myworkplace.html', context)
