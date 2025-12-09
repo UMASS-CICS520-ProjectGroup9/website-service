@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.conf import settings
 from dateutil import parser
+from django.views.decorators.http import require_http_methods
 
 PROFESSORS_API_BASE_URL = settings.PROFESSORS_API_BASE_URL
 COURSES_API_BASE_URL = settings.COURSES_API_BASE_URL
@@ -24,6 +25,7 @@ def getProfessorsReviews(professors_data, authen):
 
     for professor in professors_data:
         professor_name = professor.get('name', 'Unknown Professor')
+        professor_id = professor.get('id') 
         
         reviews = professor.get('reviews', [])
         
@@ -38,6 +40,7 @@ def getProfessorsReviews(professors_data, authen):
                 review_with_name["created_at"] = parser.parse(review_with_name["created_at"])
             
             review_with_name['professor_name'] = professor_name
+            review_with_name['professor_id'] = professor_id
             
             all_reviews_list.append(review_with_name)
             
@@ -88,9 +91,35 @@ def filter_course_discussions_and_comments(discussion_data, authen):
                         comment["created_at"] = parser.parse(comment["created_at"])
                     except:
                         pass
+                # Add course information to comment
+                comment['course_subject'] = discussion.get('course_subject')
+                comment['course_id'] = discussion.get('course_id')
                 my_comments.append(comment)
 
     return my_discussions, my_comments
+
+def format_event_dates(event_data):
+    """
+    Convert event_start_date and event_end_date from ISO 8601 string to datetime object
+    """
+    if not isinstance(event_data, list):
+        return event_data
+    
+    for event in event_data:
+        if isinstance(event, dict):
+            if isinstance(event.get("event_start_date"), str):
+                try:
+                    event["event_start_date"] = parser.parse(event["event_start_date"])
+                except:
+                    pass
+            
+            if isinstance(event.get("event_end_date"), str):
+                try:
+                    event["event_end_date"] = parser.parse(event["event_end_date"])
+                except:
+                    pass
+    
+    return event_data
 
 def myworkplace(request):
     is_login = "access_token" in request.session
@@ -135,12 +164,14 @@ def myworkplace(request):
     if authen.get('role') != "ADMIN":    
         res_student_events = requests.get(f"{EVENTS_API_BASE_URL}/api/events/{authen.get('user_id')}/creator_id/", headers=headers)
         event_data = res_student_events.json()
+        event_data = format_event_dates(event_data)
         courses_data = []
         professors_data = []
         
     else:
         res_admin_events = requests.get(f"{EVENTS_API_BASE_URL}/api/events/")
         event_data = res_admin_events.json()
+        event_data = format_event_dates(event_data)
 
     context = {
         'events': event_data,

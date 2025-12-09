@@ -31,8 +31,8 @@
                 <td>{{ e.location }}</td>
                 <td>{{ e.capacity }}</td>
                 <td>{{ e.hosted_by }}</td>
-                <td>{{ e.event_start_date }}</td>
-                <td>{{ e.event_end_date }}</td>
+                <td>{{ e.event_start_date|date:"Y-m-d H:i" }}</td>
+                <td>{{ e.event_end_date|date:"Y-m-d H:i" }}</td>
                 <td>
                   <a href="{% url 'getEventByID' e.eventID %}">more detail</a>
                 </td>

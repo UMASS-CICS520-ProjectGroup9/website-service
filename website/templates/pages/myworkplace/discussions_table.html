@@ -1,92 +1,94 @@
 {% load static %}
 
 <article class="post">
-    
-    <section>
-        <h3>My Discussions Lists</h3>
-        
-        {% if discussions %}
-            <p>Showing {{ discussions|length }} discussion{% if discussions|length != 1 %}s{% endif %}.</p>
+  <section>
+    <h3>My Discussions Lists</h3>
 
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Body</th>
-                            <th>Author</th>
-                            <th style="width: 150px;">Created At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for d in discussions %}
-                        <tr>
-                            <td><a href="{% url 'discussion_detail' d.id %}">{{ d.title }}</a></td>
-                            <td>{{ d.body|truncatechars:50 }}</td> <td>{{ d.author }}</td>
-                            <td>
-                                {% if d.created_at_display %}
-                                    {{ d.created_at_display }}
-                                {% else %}
-                                    {{ d.created_at|date:"Y-m-d H:i" }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div> 
-        {% else %}
-            <p>No discussions found.</p>
-        {% endif %}
-        
-    </section>
+    {% if discussions %}
+      <p>
+        Showing {{ discussions|length }} discussion{% if discussions|length != 1 %}s{% endif %}.
+      </p>
 
-    <hr style="border-top: 1px dashed rgba(160,160,160,0.3); margin: 2em 0;" />
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Content</th>
+              <th>Author</th>
+              <th style="width: 150px;">Created At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in discussions %}
+              <tr>
+                <td>{{ d.title }}</td>
+                <td>{{ d.body|truncatechars:50 }}</td> <td>{{ d.author }}</td>
+                <td>
+                  {% if d.created_at_display %}
+                    {{ d.created_at_display }}
+                  {% else %}
+                    {{ d.created_at|date:'Y-m-d H:i' }}
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'discussion_detail' d.id %}">more detail</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No discussions found.</p>
+    {% endif %}
+  </section>
 
-    <section>
-        <h3>My Comments Lists</h3>
-        
-        {% if comments %}
-            <p>
-                Showing {{ comments|length }} comment{% if comments|length != 1 %}s{% endif %}.
-            </p>
+  <hr style="border-top: 1px dashed rgba(160,160,160,0.3); margin: 2em 0;" />
 
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Body</th>
-                            <th>Author</th>
-                            <th>Reply To (Discussion)</th>
-                            <th style="width: 150px;">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for comment in comments %}
-                        <tr>
-                            <td>{{ comment.body }}</td>
-                            <td>{{ comment.author }}</td>
-                            <td>
-                                <span style="font-size: 0.8em; color: #888;">on:</span>
-                                <a href="{% url 'discussion_detail' comment.discussion %}">
-                                    {{ comment.discussion_title }}
-                                </a>
-                            </td>
-                            <td>
-                                {% if comment.created_at_display %}
-                                    {{ comment.created_at_display }}
-                                {% else %}
-                                    {{ comment.created_at|date:"Y-m-d H:i" }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>No comments found.</p>
-        {% endif %}
-    </section>
+  <section>
+    <h3>My Comments Lists</h3>
 
+    {% if comments %}
+      <p>
+        Showing {{ comments|length }} comment{% if comments|length != 1 %}s{% endif %}.
+      </p>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Discussion</th>
+              <th>Content</th>
+              <th>Author</th>
+              <th style="width: 150px;">Created At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for comment in comments %}
+              <tr>
+                <td>{{ comment.discussion_title }}</td>
+                <td>{{ comment.body }}</td>
+                <td>{{ comment.author }}</td>
+                <td>
+                  {% if comment.created_at_display %}
+                    {{ comment.created_at_display }}
+                  {% else %}
+                    {{ comment.created_at|date:'Y-m-d H:i' }}
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{% url 'discussion_detail' comment.discussion %}">more detail</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>No comments found.</p>
+    {% endif %}
+  </section>
 </article>

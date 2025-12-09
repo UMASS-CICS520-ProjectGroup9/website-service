@@ -16,6 +16,7 @@
               <tr>
                 <th>Title</th>
                 <th>Course ID</th>
+                <th>Credits</th>
                 <th>Schedule</th>
                 <th>Room</th>
                 <th>Requirements</th>
@@ -30,6 +31,7 @@
                 <tr>
                   <td>{{ course.title }}</td>
                   <td>{{ course.courseSubject }} {{ course.courseID }}</td>
+                  <td>{{ course.credits }}</td>
                   <td>{{ course.schedule }}</td>
                   <td>{{ course.room }}</td>
                   <td>{{ course.requirements }}</td>
@@ -37,8 +39,7 @@
                   <td>{{ course.instructor }}</td>
                   <td>{{ course.instruction_mode }}</td>
                   <td>
-                    <a href="">edit</a>
-                    <a href="">remove</a>
+                    <a href="{% url 'course_search' %}?courseSubject={{ course.courseSubject }}&courseID={{ course.courseID }}">more detail</a>
                   </td>
                 </tr>
               {% endfor %}
@@ -78,8 +79,7 @@
                   <td>{{ coursesDiscussion.author }}</td>
                   <td>{{ coursesDiscussion.created_at|date:'Y-m-d H:i' }}</td>
                   <td>
-                    <a href="">edit</a>
-                    <a href="">delete</a>
+                    <a href="{% url 'course_discussion_detail' coursesDiscussion.course_subject coursesDiscussion.course_id %}">more detail</a>
                   </td>
                 </tr>
               {% endfor %}
@@ -119,8 +119,7 @@
                 <td>{{ comment.author }}</td>
                 <td>{{ comment.created_at|date:'Y-m-d H:i' }}</td>
                 <td>
-                  <a href="">edit</a>
-                  <a href="">delete</a>
+                  <a href="{% url 'course_discussion_detail' comment.course_subject comment.course_id %}">more detail</a>
                 </td>
               </tr>
             {% endfor %}
