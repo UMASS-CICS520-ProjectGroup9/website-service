@@ -29,10 +29,8 @@
                   <td>{{ professor.email }}</td>
                   <td>{{ professor.office }}</td>
                   <td>{{ professor.rating }}</td>
-
                   <td>
-                    <a href="">edit</a>
-                    <a href="">remove</a>
+                    <a href="{% url 'professors' %}?query={{ professor.name }}">more detail</a>
                   </td>
                 </tr>
               {% endfor %}
@@ -61,6 +59,7 @@
               <th>Rating</th>
               <th>Author</th>
               <th>Create Time</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -70,7 +69,10 @@
                 <td>{{ professorsReview.comment }}</td>
                 <td>{{ professorsReview.rating }}</td>
                 <td>{{ professorsReview.author }}</td>
-                <td>{{ professorsReview.created_at }}</td>
+                <td>{{ professorsReview.created_at |date:"Y-m-d H:i" }}</td>
+                <td>
+                  <a href="{% url 'professor_detail' professorsReview.professor_id %}">more detail</a>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
