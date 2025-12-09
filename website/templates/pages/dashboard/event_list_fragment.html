@@ -1,12 +1,13 @@
-{% for e in events %}
-    {% include "pages/dashboard/event_card.html" with e=e %}
+{% if events %}
+{% for e in events|slice:":3" %}
+{% include "pages/dashboard/event_card.html" with e=e %}
 {% empty %}
-    <p>No events found.</p>
+<p>No events found.</p>
 {% endfor %}
-
+{% else %}
+<p>No events found.</p>
+{% endif %}
 
 <!-- Page Metadata for JS -->
-<div id="event-page-info"
-     data-current-page="{{ current_page }}"
-     data-total-pages="{{ total_pages }}">
+<div id="event-page-info" data-current-page="{{ current_page }}" data-total-pages="{{ total_pages }}">
 </div>

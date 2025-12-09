@@ -24,20 +24,23 @@ def getAuthen(request):
     }
 
 def index(request):
-    token = request.session.get("access_token")
-    print(f"DEBUG: Index view - Token present: {bool(token)}")
-    if token:
-        print(f"DEBUG: Token: {token[:10]}...")
+    # token = request.session.get("access_token")
+    # print(f"DEBUG: Index view - Token present: {bool(token)}")
+    # if token:
+    #     print(f"DEBUG: Token: {token[:10]}...")
     
-    course_data = courseAPI(token=token)
+    # course_data = courseAPI(token=token)
+    course_data = courseAPI()
     if course_data:
         course_data = course_data[:3]
 
     authen = getAuthen(request)
+    events = eventsSortedByStartDate_model()
 
     context = {
         'authen': authen,
-        'courses': course_data
+        'courses': course_data,
+        'events': events,
     }
     
     return render(request, 'index.html', context)
