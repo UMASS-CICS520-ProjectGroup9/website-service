@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['cics520umass.pythonanywhere.com']
 
-STATIC_ROOT = '/home/cics520umass/static/'
+STATIC_ROOT = '/home/cics520umass/mysite/static/'
 
 
 # Application definition
