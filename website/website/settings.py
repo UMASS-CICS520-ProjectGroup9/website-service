@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&4z7%huxwg-%x3yj%z-18=&^vu--)087-jc#b9v92k9+b0jf2a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cics520umass.pythonanywhere.com']
+ALLOWED_HOSTS = ['cics520umass.pythonanywhere.com','localhost','127.0.0.1']
 
 STATIC_ROOT = '/home/cics520umass/website-service/website/static/'
 
