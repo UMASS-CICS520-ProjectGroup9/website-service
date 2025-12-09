@@ -24,23 +24,20 @@ def getAuthen(request):
     }
 
 def index(request):
-    # token = request.session.get("access_token")
+    token = request.session.get("access_token")
     # print(f"DEBUG: Index view - Token present: {bool(token)}")
     # if token:
     #     print(f"DEBUG: Token: {token[:10]}...")
     
-    # course_data = courseAPI(token=token)
-    course_data = courseAPI()
+    course_data = courseAPI(token=token)
     if course_data:
         course_data = course_data[:3]
 
     authen = getAuthen(request)
-    events = eventsSortedByStartDate_model()
 
     context = {
         'authen': authen,
-        'courses': course_data,
-        'events': events,
+        'courses': course_data
     }
     
     return render(request, 'index.html', context)
@@ -79,6 +76,7 @@ def discussions_page(request, page):
     return HttpResponse(html)
 
 def events_page(request, page):
+
     today = timezone.localdate()
 
     events_data = eventsSortedByStartDate_model()
@@ -86,6 +84,10 @@ def events_page(request, page):
         e for e in events_data
         if parser.parse(e["event_start_date"]).date() == today
     ]
+
+    print("LOGIN:", "access_token" in request.session)
+    print("EVENT COUNT:", len(events_data))
+    print("TODAY COUNT:", len(events_today))
     
     for e in events_today:
         if isinstance(e["created_at"], str):
