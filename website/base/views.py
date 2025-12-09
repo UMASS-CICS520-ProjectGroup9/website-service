@@ -80,16 +80,12 @@ def events_page(request, page):
     today = timezone.localdate()
 
     events_data = eventsSortedByStartDate_model()
-    events_today = [
-        e for e in events_data
-        if parser.parse(e["event_start_date"]).date() == today
-    ]
-
-    print("LOGIN:", "access_token" in request.session)
-    print("EVENT COUNT:", len(events_data))
-    print("TODAY COUNT:", len(events_today))
+    #events_today = [
+    #    e for e in events_data
+    #    if parser.parse(e["event_start_date"]).date() == today
+    #]
     
-    for e in events_today:
+    for e in events_data:
         if isinstance(e["created_at"], str):
             e["created_at"] = parser.parse(e["created_at"])
         if isinstance(e.get("event_start_date"), str):
@@ -99,12 +95,12 @@ def events_page(request, page):
 
     # For change pages
     per_page = 3
-    total_pages = math.ceil(len(events_today) / per_page)
+    total_pages = math.ceil(len(events_data) / per_page)
 
     # slice page data
     start = (page - 1) * per_page
     end = start + per_page
-    page_events = events_today[start:end]
+    page_events = events_data[start:end]
 
     # render partial fragment
     html = render_to_string("pages/dashboard/event_list_fragment.html", {
