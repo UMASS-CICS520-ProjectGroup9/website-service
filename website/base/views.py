@@ -183,8 +183,6 @@ def loginProcess(request):
         else:
             return render(request, 'pages/authentication/login.html', {"error": "Invalid login credentials"})
 
-    return render(request, "login.html")
-
 def logout(request):
     request.session.flush()
     return redirect("login")

@@ -17,20 +17,32 @@ class TestWebViews:
     - Edge case and error handling
     """
 
-    def test_index_renders_posts_and_auth(self, client):
-        """Index page: not logged in, posts and auth context present."""
-        # Precondition: No session token
+    def test_index_renders_courses_and_auth(self, client, monkeypatch):
+        """
+        Index page: 
+        1. Not logged in (auth context is False).
+        2. Courses are rendered and limited to 3 items (covers slicing logic).
+        """
+        # Precondition 1: Mock courseAPI to return 5 items (more than 3 to test slicing)
+        fake_courses = [{"id": i, "name": f"Course {i}"} for i in range(5)]
+        monkeypatch.setattr("base.views.courseAPI", lambda token=None: fake_courses)
+
+        # Precondition 2: No session token
         assert "access_token" not in client.session, "Precondition: No session token should exist."
+
         # Testing
         response = client.get(reverse("index"))
+
         assert response.status_code == 200, "Testing: Should return 200 OK."
+        
+        # Check Auth Context
         assert response.context["authen"]["is_login"] is False, "Testing: Should not be logged in."
-        # Postcondition: posts context key exists
-        assert "posts" in response.context, "Postcondition: Posts context key should exist."
 
-    # ...existing tests for index, register, login, events, discussions, etc...
-
-
+        # Check Courses Context (This covers the red line in your screenshot)
+        assert "courses" in response.context, "Postcondition: Courses context key should exist."
+        assert len(response.context["courses"]) == 3, "Testing: Courses should be sliced to exactly 3 items."
+        assert response.context["courses"][0]["id"] == 0
+        assert response.context["courses"][2]["id"] == 2
 
     def test_myworkplace_page_renders(self, client, monkeypatch):
         """MyWorkplace page: renders with mocked API responses and session."""
@@ -296,3 +308,14 @@ class TestWebViews:
         assert response.status_code == 200, "Testing: Should return 200 OK."
         # Postcondition: Error message for empty fields or invalid credentials
         assert response.context["error"] in ("Invalid login credentials", "All fields are required!"), "Postcondition: Should return a relevant error message."
+
+    def test_register_create_renders_form_on_get(self, client):
+        """RegisterCreate: GET request renders the registration form."""
+        # Precondition: No session needed
+        
+        # Testing
+        response = client.get(reverse("registerCreate"))
+        
+        # Postcondition: Status 200 and correct template used
+        assert response.status_code == 200
+        assert "pages/authentication/register.html" in [t.name for t in response.templates]
