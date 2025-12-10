@@ -257,7 +257,6 @@ class TestWebViews:
         total_pages = math.ceil(len(fake_discussions) / 5)
         assert str(total_pages) in response.content.decode()
 
-    @pytest.mark.xfail(reason="View does not gracefully handle external exception yet.")
     @pytest.mark.parametrize("view,page", [("events_page", 1), ("discussions_page", 1)])
     def test_page_handles_external_exception(self, client, monkeypatch, view, page):
         """Events/Discussions page: handles external API failure gracefully."""

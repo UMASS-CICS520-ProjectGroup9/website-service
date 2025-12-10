@@ -78,37 +78,39 @@ def discussions_page(request, page):
 def events_page(request, page):
 
     today = timezone.localdate()
+    try:
+        events_data = eventsSortedByStartDate_model()
+        for e in events_data:
+            if isinstance(e["created_at"], str):
+                e["created_at"] = parser.parse(e["created_at"])
+            if isinstance(e.get("event_start_date"), str):
+                e["event_start_date"] = parser.parse(e["event_start_date"])
+            if isinstance(e.get("event_end_date"), str):
+                e["event_end_date"] = parser.parse(e["event_end_date"])
 
-    events_data = eventsSortedByStartDate_model()
-    #events_today = [
-    #    e for e in events_data
-    #    if parser.parse(e["event_start_date"]).date() == today
-    #]
-    
-    for e in events_data:
-        if isinstance(e["created_at"], str):
-            e["created_at"] = parser.parse(e["created_at"])
-        if isinstance(e.get("event_start_date"), str):
-            e["event_start_date"] = parser.parse(e["event_start_date"])
-        if isinstance(e.get("event_end_date"), str):
-            e["event_end_date"] = parser.parse(e["event_end_date"])
+        # For change pages
+        per_page = 3
+        total_pages = math.ceil(len(events_data) / per_page)
 
-    # For change pages
-    per_page = 3
-    total_pages = math.ceil(len(events_data) / per_page)
+        # slice page data
+        start = (page - 1) * per_page
+        end = start + per_page
+        page_events = events_data[start:end]
 
-    # slice page data
-    start = (page - 1) * per_page
-    end = start + per_page
-    page_events = events_data[start:end]
-
-    # render partial fragment
-    html = render_to_string("pages/dashboard/event_list_fragment.html", {
-        "events": page_events,
-        "current_page": page,
-        "total_pages": total_pages,
-    })
-
+        # render partial fragment
+        html = render_to_string("pages/dashboard/event_list_fragment.html", {
+            "events": page_events,
+            "current_page": page,
+            "total_pages": total_pages,
+        })
+    except Exception as e:
+        # Render an error fragment or message
+        html = render_to_string("pages/dashboard/event_list_fragment.html", {
+            "events": [],
+            "current_page": page,
+            "total_pages": 1,
+            "error_message": f"Could not load events: {str(e)}"
+        })
     return HttpResponse(html)
 
 def register(request):
