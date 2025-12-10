@@ -38,14 +38,22 @@ def course_search(request):
     instructor = request.GET.get('instructor', '')
     
     token = request.session.get("access_token")
-    courses = get_courses_from_api(courseSubject, courseID, title, instructor, token=token)
+    error = None
+    courses = []
+    try:
+        courses = get_courses_from_api(courseSubject, courseID, title, instructor, token=token)
+    except Exception as e:
+        error = str(e) or "An error occurred while searching for courses."
     authen = {
         "is_login": "access_token" in request.session,
         "user_email": request.session.get("email"),
         "role": request.session.get("role"),
         "user_id": request.session.get("user_id")
     }
-    return render(request, 'pages/courses/courses.html', {'courseAPI': courses, 'searched': True, 'authen': authen})
+    context = {'courseAPI': courses, 'searched': True, 'authen': authen}
+    if error:
+        context['error'] = error
+    return render(request, 'pages/courses/courses.html', context)
 
 def delete_course(request, courseSubject, courseID):
     """
@@ -62,7 +70,22 @@ def delete_course(request, courseSubject, courseID):
     }
     if request.method == 'POST':
         token = request.session.get("access_token")
-        delete_course_api(courseSubject, courseID, token=token)
+        success = False
+        error = None
+        try:
+            success = delete_course_api(courseSubject, courseID, token=token)
+        except Exception as e:
+            error = str(e) or "An error occurred while deleting the course."
+        if not success or error:
+            # Render the courses page with error
+            courses = courseAPI(token=token)
+            context = {
+                'courseAPI': courses,
+                'searched': False,
+                'authen': authen,
+                'error': error or "Failed to delete course."
+            }
+            return render(request, 'pages/courses/courses.html', context)
     return redirect('courses')
 
 def add_course(request):
@@ -78,6 +101,7 @@ def add_course(request):
         "role": request.session.get("role"),
         "user_id": request.session.get("user_id")
     }
+    error = None
     if request.method == 'POST':
         data = {
             'courseSubject': request.POST.get('courseSubject'),
@@ -92,9 +116,13 @@ def add_course(request):
             'instruction_mode': request.POST.get('instruction_mode'),
         }
         token = request.session.get("access_token")
-        if create_course_api(data, token=token):
+        try:
+            success = create_course_api(data, token=token)
+        except Exception as e:
+            error = str(e) or "An error occurred while adding the course."
+            success = False
+        if success:
             return redirect('courses')
         else:
-            # Handle error (maybe pass an error message to the template)
-            pass
-    return render(request, 'pages/courses/add_course.html', {'authen': authen})
+            error = error or "Failed to add course. Please check your input."
+    return render(request, 'pages/courses/add_course.html', {'authen': authen, 'error': error} if error else {'authen': authen})

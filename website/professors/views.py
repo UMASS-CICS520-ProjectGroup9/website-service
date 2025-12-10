@@ -4,14 +4,22 @@ from .models import get_professors_api, get_professor_api, create_review_api, cr
 def professors(request):
     query = request.GET.get('query', '')
     token = request.session.get("access_token")
-    professors_list = get_professors_api(query, token=token)
+    error = None
+    professors_list = []
+    try:
+        professors_list = get_professors_api(query, token=token)
+    except Exception as e:
+        error = str(e) or "An error occurred while fetching professors."
     authen = {
         "is_login": "access_token" in request.session,
         "user_email": request.session.get("email"),
         "role": request.session.get("role"),
         "user_id": request.session.get("user_id")
     }
-    return render(request, 'pages/professors/professors.html', {'professors': professors_list, 'query': query, 'authen': authen})
+    context = {'professors': professors_list, 'query': query, 'authen': authen}
+    if error:
+        context['error'] = error
+    return render(request, 'pages/professors/professors.html', context)
 
 def professor_detail(request, pk):
     token = request.session.get("access_token")
@@ -24,15 +32,26 @@ def professor_detail(request, pk):
         "role": request.session.get("role"),
         "user_id": request.session.get("user_id")
     }
+    error = None
     if request.method == 'POST':
         data = {
             'author': request.POST.get('author'),
             'rating': request.POST.get('rating'),
             'comment': request.POST.get('comment')
         }
-        if create_review_api(pk, data, token=token):
+        try:
+            success = create_review_api(pk, data, token=token)
+        except Exception as e:
+            error = str(e) or "An error occurred while adding the review."
+            success = False
+        if success:
             return redirect('professor_detail', pk=pk)
-    return render(request, 'pages/professors/professor_detail.html', {'professor': professor, 'authen': authen})
+        else:
+            error = error or "Failed to add review. Please check your input."
+    context = {'professor': professor, 'authen': authen}
+    if error:
+        context['error'] = error
+    return render(request, 'pages/professors/professor_detail.html', context)
 
 def add_professor(request):
     role = request.session.get("role")
@@ -44,6 +63,7 @@ def add_professor(request):
         "role": request.session.get("role"),
         "user_id": request.session.get("user_id")
     }
+    error = None
     if request.method == 'POST':
         data = {
             'name': request.POST.get('name'),
@@ -52,9 +72,16 @@ def add_professor(request):
             'office': request.POST.get('office'),
         }
         token = request.session.get("access_token")
-        if create_professor_api(data, token=token):
+        try:
+            success = create_professor_api(data, token=token)
+        except Exception as e:
+            error = str(e) or "An error occurred while adding the professor."
+            success = False
+        if success:
             return redirect('professors')
-    return render(request, 'pages/professors/add_professor.html', {'authen': authen})
+        else:
+            error = error or "Failed to add professor. Please check your input."
+    return render(request, 'pages/professors/add_professor.html', {'authen': authen, 'error': error} if error else {'authen': authen})
 
 def delete_professor(request, pk):
     role = request.session.get("role")
@@ -68,7 +95,32 @@ def delete_professor(request, pk):
     }
     if request.method == 'POST':
         token = request.session.get("access_token")
-        delete_professor_api(pk, token=token)
+        success = False
+        error = None
+        try:
+            success = delete_professor_api(pk, token=token)
+        except Exception as e:
+            error = str(e) or "An error occurred while deleting the professor."
+        if not success or error:
+            # Render the professors page with error
+            query = ''
+            try:
+                professors_list = get_professors_api(query, token=token)
+            except Exception:
+                professors_list = []
+            authen = {
+                "is_login": "access_token" in request.session,
+                "user_email": request.session.get("email"),
+                "role": request.session.get("role"),
+                "user_id": request.session.get("user_id")
+            }
+            context = {
+                'professors': professors_list,
+                'query': query,
+                'authen': authen,
+                'error': error or "Failed to delete professor."
+            }
+            return render(request, 'pages/professors/professors.html', context)
     return redirect('professors')
 
 def delete_review(request, pk):
