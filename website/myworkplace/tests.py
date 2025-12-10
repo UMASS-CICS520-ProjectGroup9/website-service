@@ -128,12 +128,12 @@ def universal_mock(url, *args, **kwargs):
                 "event_start_date": "2025-01-01T10:00:00Z",
                 "event_end_date": "2025-01-01T12:00:00Z"
             },
-            # ❗ Invalid event (Test 8 coverage, triggers two except blocks)
+            # Invalid event
             {
                 "id": 2,
                 "eventID": 2,
-                "event_start_date": "NOT_A_DATE",   # invalid → triggers except
-                "event_end_date": "INVALID_DATE"    # invalid → triggers except
+                "event_start_date": "NOT_A_DATE",   
+                "event_end_date": "INVALID_DATE"  
             }
         ])
 

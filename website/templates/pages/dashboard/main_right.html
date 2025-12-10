@@ -53,33 +53,48 @@
 </div>
 
 <script>
+  // ==========================================
+  // SECTION 1: DISCUSSION PAGINATION LOGIC
+  // ==========================================
+
+  /**
+   * Updates the state (enabled/disabled) of discussion pagination buttons
+   * based on the current page and total pages.
+   */
   function updateDiscussionButtons() {
     const info = document.querySelector('#discussion-page-info')
     const pagination = document.getElementById('discussion-pagination')
 
+    // Safety check: ensure elements exist
     if (!info || !pagination) return;
 
+    // Parse current page and total pages from data attributes
     let current = parseInt(info.dataset.currentPage)
     let total = parseInt(info.dataset.totalPages)
 
+    // Hide pagination controls if there is only 1 page
     pagination.style.display = total <= 1 ? 'none' : 'block'
 
     const prevBtn = document.getElementById('d-prev-btn')
     const nextBtn = document.getElementById('d-next-btn')
 
+    // Disable 'Previous' on page 1, disable 'Next' on the last page
     if (prevBtn && nextBtn) {
       prevBtn.disabled = current <= 1
       nextBtn.disabled = current >= total
     }
   }
 
+  // Event Listener: Re-evaluate button states after HTMX loads new content
   document.body.addEventListener('htmx:afterSwap', function (event) {
     if (event.detail.target.id === 'discussion-container') {
       updateDiscussionButtons()
     }
   })
 
-  // NEXT (discussion)
+  // -----------------------------
+  // DISCUSSION: NEXT BUTTON
+  // -----------------------------
   const dNext = document.getElementById('d-next-btn')
   if (dNext) {
     dNext.addEventListener('click', function () {
@@ -89,19 +104,22 @@
       let current = parseInt(info.dataset.currentPage)
       let total = parseInt(info.dataset.totalPages)
 
+      // If not on the last page, load the next page via HTMX
       if (current < total) {
         htmx.ajax('GET', `/dashboard-discussions/page/${current + 1}/`, {
           target: '#discussion-container',
           swap: 'innerHTML'
         }).then(() => {
-          updateDiscussionButtons()
-          scrollToDiscussions()
+          updateDiscussionButtons() // Update buttons after load
+          scrollToDiscussions()     // Scroll back to top of section
         })
       }
     })
   }
 
-  // PREVIOUS (discussion)
+  // -----------------------------
+  // DISCUSSION: PREVIOUS BUTTON
+  // -----------------------------
   const dPrev = document.getElementById('d-prev-btn')
   if (dPrev) {
     dPrev.addEventListener('click', function () {
@@ -110,6 +128,7 @@
 
       let current = parseInt(info.dataset.currentPage)
 
+      // If not on the first page, load the previous page via HTMX
       if (current > 1) {
         htmx.ajax('GET', `/dashboard-discussions/page/${current - 1}/`, {
           target: '#discussion-container',
@@ -122,6 +141,7 @@
     })
   }
 
+  // Helper function to smooth scroll back to the discussion section
   function scrollToDiscussions() {
     const discussionsSection = document.querySelector('#discussions-section')
     if (discussionsSection) {
@@ -129,15 +149,18 @@
     }
   }
 
+  // Initialize buttons when the page first loads
   document.addEventListener('DOMContentLoaded', updateDiscussionButtons)
 
-  // -----------------------------
-  // EVENT PAGINATION (SAFE)
-  // -----------------
 
-// -----------------------------
-  // EVENT PAGINATION (SAFE)
-  // -----------------------------
+  // ==========================================
+  // SECTION 2: EVENT PAGINATION LOGIC
+  // ==========================================
+
+  /**
+   * Updates the state of event pagination buttons.
+   * Logic is identical to discussion buttons but targets event IDs.
+   */
   function updateEventPageButtons() {
     const info = document.querySelector('#event-page-info')
     const pagination = document.getElementById('event-pagination')
@@ -147,6 +170,7 @@
     let current = parseInt(info.dataset.currentPage)
     let total = parseInt(info.dataset.totalPages)
 
+    // Hide if only 1 page exists
     pagination.style.display = total <= 1 ? 'none' : 'block'
 
     const prev = document.getElementById('prev-btn')
@@ -158,13 +182,16 @@
     }
   }
 
+  // Re-evaluate event buttons after HTMX swap
   document.body.addEventListener('htmx:afterSwap', function (event) {
     if (event.detail.target.id === 'event-container') {
       updateEventPageButtons()
     }
   })
 
-  // NEXT (events)
+  // -----------------------------
+  // EVENTS: NEXT BUTTON
+  // -----------------------------
   const eNext = document.getElementById('next-btn')
   if (eNext) {
     eNext.addEventListener('click', function () {
@@ -174,6 +201,7 @@
       let current = parseInt(info.dataset.currentPage)
       let total = parseInt(info.dataset.totalPages)
 
+      // Fetch next event page
       if (current < total) {
         htmx.ajax('GET', `/events/page/${current + 1}/`, {
           target: '#event-container',
@@ -186,7 +214,9 @@
     })
   }
 
-  // PREVIOUS (events)
+  // -----------------------------
+  // EVENTS: PREVIOUS BUTTON
+  // -----------------------------
   const ePrev = document.getElementById('prev-btn')
   if (ePrev) {
     ePrev.addEventListener('click', function () {
@@ -195,6 +225,7 @@
 
       let current = parseInt(info.dataset.currentPage)
 
+      // Fetch previous event page
       if (current > 1) {
         htmx.ajax('GET', `/events/page/${current - 1}/`, {
           target: '#event-container',
@@ -207,6 +238,7 @@
     })
   }
 
+  // Helper function to smooth scroll back to the events section
   function scrollToEvents() {
     const eventsSection = document.querySelector('#events-section')
     if (eventsSection) {
@@ -214,5 +246,6 @@
     }
   }
 
+  // Initialize event buttons on load
   document.addEventListener('DOMContentLoaded', updateEventPageButtons)
 </script>
