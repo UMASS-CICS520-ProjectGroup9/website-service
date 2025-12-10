@@ -1,3 +1,6 @@
+# Allow Sphinx HTML build output to be tracked
+!docs/build/html/
+!docs/build/html/**
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
