@@ -123,7 +123,7 @@ def delete_professor(request, pk):
             return render(request, 'pages/professors/professors.html', context)
     return redirect('professors')
 
-def delete_review(request, pk):
+def delete_review(request, prof_pk, review_pk):
     token = request.session.get("access_token")
     authen = {
         "is_login": "access_token" in request.session,
@@ -132,7 +132,7 @@ def delete_review(request, pk):
         "user_id": request.session.get("user_id")
     }
     # Call the API to delete the review
-    delete_review_api(pk, token=token)
+    delete_review_api(prof_pk, review_pk, token=token)
     # Redirect back to the referring page or professors list
     referer = request.META.get('HTTP_REFERER')
     if referer:

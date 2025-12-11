@@ -66,12 +66,12 @@ def delete_professor_api(pk, token=None):
     except requests.exceptions.RequestException:
         return False
 
-def delete_review_api(pk, token=None):
+def delete_review_api(prof_pk, review_pk, token=None):
     headers = {}
     if token:
         headers['Authorization'] = f"Bearer {token}"
     try:
-        url = f"{PROFESSORS_API_BASE_URL}review/{pk}/delete/"
+        url = f"{PROFESSORS_API_BASE_URL}{prof_pk}/review/{review_pk}/delete/"
         response = requests.delete(url, headers=headers)
         return response.status_code == 204
     except requests.exceptions.RequestException:
