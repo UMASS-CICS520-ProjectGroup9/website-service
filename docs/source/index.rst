@@ -7,19 +7,20 @@ Overview
 --------
 This project is a modular Django web application for academic strategy and success, including account, courses, professors, events, discussions, and authentication services.
 
+
 Setup
 -----
-1. Install dependencies:
-   ::
-      pip install -r requirements.txt
+1. Install dependencies::
 
-2. Apply migrations:
-   ::
-      python manage.py migrate
+   pip install -r requirements.txt
 
-3. Run the development server:
-   ::
-      python manage.py runserver
+2. Apply migrations::
+
+   python manage.py migrate
+
+3. Run the development server::
+
+   python manage.py runserver
 
 Usage
 -----
@@ -38,6 +39,13 @@ Project Structure
 - professorsService/: Professors and ratings
 - eventsService/: Events and calendar
 - discussionsService/: Discussions and forums
+
+API Documentation
+-----------------
+.. automodule:: base.views
+   :members:
+   :undoc-members:
+   :show-inheritance:
 - userauthen/: User authentication
 - website/: Main Django project
 
