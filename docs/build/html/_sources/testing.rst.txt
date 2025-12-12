@@ -3,27 +3,31 @@ Testing
 
 Pytest Suite
 ------------
-- Run all tests::
+
+* Run all tests::
 
     pytest
 
-- Run a subset::
+* Run a subset::
 
     pytest path/to/your/tests.py
 
 Test Report
 -----------
-- View the latest test report:
-    `Test Report <all_tests_report.html>`_
+
+* View the latest test report:
+  `Test Report <all_tests_report.html>`_
 
 Django Test Runner
 ------------------
-- Standard Django runner remains available::
+
+* Standard Django runner remains available::
 
     python manage.py test
 
 Sanity Checks
 -------------
-- Validate configuration::
+
+* Validate configuration::
 
     python manage.py check
